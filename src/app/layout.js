@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       
-      <body className="bg-white text-slate-900">
+      <body >
         
         <Navbar />
         <main>{children}</main>
