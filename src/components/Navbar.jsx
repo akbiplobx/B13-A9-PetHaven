@@ -18,11 +18,17 @@ const Navbar = () => {
       <nav className="flex justify-between items-center py-4 max-w-7xl mx-auto w-full">
         
         {/* Logo + Website Name */}
-        <Link href="/" className="flex gap-2 items-center">
-          <h3 className="font-black text-2xl tracking-tighter text-slate-800">
-            Pet<span className="text-[#FFA600]">Haven</span>
-          </h3>
-        </Link>
+<Link href="/" className="flex items-center">
+  {/* ফিক্সড: src পাথের শুরুতে / দেওয়া হয়েছে এবং সাইজ কন্ট্রোল করার জন্য ক্লাস বসানো হয়েছে */}
+  <img 
+    src="/logo.png" 
+    alt="PetHaven Logo" 
+    className="w-15 h-15 object-contain" 
+  />
+  <h3 className="font-black text-2xl tracking-tighter text-slate-800">
+    Pet<span className="text-[#FFA600]">Haven</span>
+  </h3>
+</Link>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-700">

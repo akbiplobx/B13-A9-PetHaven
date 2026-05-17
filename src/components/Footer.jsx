@@ -11,10 +11,11 @@ const Footer = () => {
           {/* 1. Brand Section (Requirement: Logo + Name + Social Links) */}
           <div className="space-y-5">
             <Link href="/" className="flex gap-2 items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-[#FFA600]">
-                <path d="M12 2a3 3 0 0 0-3 3c0 1.13.5 2.14 1.28 2.84A4.001 4.001 0 0 0 6 11v1a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-1a4 4 0 0 0-4.28-3.16C14.5 8.14 15 7.13 15 5a3 3 0 0 0-3-3Zm-4.5 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm9 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z" />
-                <path d="M4 14a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3H4Z" />
-              </svg>
+              <img 
+    src="/logo.png" 
+    alt="PetHaven Logo" 
+    className="w-15 h-15 object-contain" 
+  />
               <h2 className="text-2xl font-extrabold tracking-tight text-slate-800">
                 Pet<span className="text-[#FFA600]">Haven</span>
               </h2>
