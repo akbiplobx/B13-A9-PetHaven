@@ -35,12 +35,13 @@ export default function RootLayout({ children }) {
           referrerPolicy="no-referrer" 
         />
       </head>
-      <body>
+      
+      <body className="bg-white text-slate-900">
+        
         <Navbar />
         <main>{children}</main>
         <Footer />
         
-       
         <ToastContainer 
           position="top-right" 
           autoClose={3000} 
@@ -53,6 +54,7 @@ export default function RootLayout({ children }) {
           pauseOnHover
           theme="light" 
         />
+
       </body>
     </html>
   );
