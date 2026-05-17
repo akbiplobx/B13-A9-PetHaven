@@ -4,15 +4,40 @@ import Link from 'next/link';
 import { Spinner } from "@heroui/react"; 
 import { motion } from "framer-motion"; 
 
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15, 
+    },
+  },
+};
+
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  show: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { 
+      type: "spring", 
+      stiffness: 70, 
+      damping: 14 
+    }
+  }
+};
+
 export default function FeaturedPets() {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true); 
-        setLoading(true);
+    setLoading(true);
     
     fetch('/data.json')
       .then((res) => res.json())
@@ -26,7 +51,6 @@ export default function FeaturedPets() {
       });
   }, []);
 
-  
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -35,13 +59,12 @@ export default function FeaturedPets() {
     );
   }
 
-  
   if (!isMounted) {
     return null;
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black text-slate-800">
@@ -50,38 +73,38 @@ export default function FeaturedPets() {
           <p className="text-slate-500 mt-2">Lovable friends waiting for a new home!</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {pets.map((pet, index) => {
-            
             const localImagePath = `/images/p${index + 1}.png`;
 
             return (
               <motion.div 
                 key={pet.id}
-                initial={{ opacity: 0, y: 30, scale: 0.96 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ 
-                  type: "spring", 
-                  stiffness: 80, 
-                  damping: 15,
-                  duration: 0.6 
-                }}
+                variants={cardVariants}
                 whileHover={{ 
                   y: -10, 
-                  scale: 1.02, 
-                  rotate: 1.5, 
-                  transition: { type: "spring", stiffness: 300, damping: 20 }
+                  scale: 1.01,
+                  boxShadow: "0px 20px 30px rgba(255, 166, 0, 0.15)", // হালকা অরেঞ্জ শ্যাডো
+                  transition: { type: "spring", stiffness: 400, damping: 25 }
                 }}
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.78 }}
                 className="bg-white rounded-3xl shadow-md overflow-hidden border border-slate-100 flex flex-col hover:shadow-2xl transition-shadow duration-300"
               >
                 {/* Pet Image */}
-                <div className="bg-orange-50 h-52 relative overflow-hidden">
-                  <img 
+                <div className="bg-orange-50 h-52 relative overflow-hidden group">
+                  <motion.img 
                     src={localImagePath} 
                     alt={pet.title || pet.name} 
                     className="absolute inset-0 w-full h-full object-cover"
+                    whileHover={{ scale: 1.05 }} 
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                     onError={(e) => { 
                       e.target.src = "https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=500"; 
                     }}
@@ -109,16 +132,20 @@ export default function FeaturedPets() {
                   {/* View Details Button */}
                   <div className="mt-auto pt-4 border-t border-slate-100">
                     <Link href={`/pet/${pet.id}`} className="block w-full">
-                      <button className="w-full bg-[#FFA600] hover:bg-[#E09200] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-orange-100">
+                      <motion.button 
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full bg-[#FFA600] hover:bg-[#E09200] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-orange-100"
+                      >
                         View Details
-                      </button>
+                      </motion.button>
                     </Link>
                   </div>
                 </div>
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
