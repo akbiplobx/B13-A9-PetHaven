@@ -11,6 +11,7 @@ import {
   TextField,
 } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link"; 
 import { useState, useEffect } from "react";
 
 export default function SignUpPage() {
@@ -70,11 +71,9 @@ export default function SignUpPage() {
   };
 
   return (
-   
     <Card className="border mx-auto w-full max-w-sm py-6 px-5 mt-5 shadow-lg rounded-2xl">
       <h1 className="text-center text-xl font-bold text-slate-800 mb-1">Sign Up</h1>
 
-      
       <Form className="flex w-full flex-col gap-3" onSubmit={onSubmit}>
         
         {/* Name Input */}
@@ -209,6 +208,14 @@ export default function SignUpPage() {
           )}
           Sign up with Google
         </Button>
+
+        {/* Login Link */}
+        <div className="text-center mt-3 text-xs text-slate-500">
+          Already have an account?{" "}
+          <Link href="/signin" className="text-[#FFA600] font-bold hover:underline">
+            Login
+          </Link>
+        </div>
 
       </Form>
     </Card>

@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { GrGoogle } from "react-icons/gr";
 import { useRouter } from "next/navigation";
+import Link from "next/link"; 
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 
@@ -19,14 +20,12 @@ export default function SignInPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   
-  
   const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  
   useEffect(() => {
     if (mounted && !isPending && session) {
       router.push("/");
@@ -37,12 +36,10 @@ export default function SignInPage() {
     return null; 
   }
 
-   
   if (isPending) {
     return <div className="text-center mt-20 font-medium text-slate-500">Checking session...</div>;
   }
 
-  
   if (session) {
     return null;
   }
@@ -147,6 +144,7 @@ export default function SignInPage() {
             <FieldError className="text-xs" />
           </TextField>
 
+          {/* Buttons */}
           <div className="flex gap-2 mt-1">
             <Button 
               type="submit"
@@ -162,6 +160,14 @@ export default function SignInPage() {
             >
               Reset
             </Button>
+          </div>
+
+          {/* Register/Sign Up Link */}
+          <div className="text-center mt-3 text-xs text-slate-500">
+            Don't have an account?{" "}
+            <Link href="/signup" className="text-[#FFA600] font-bold hover:underline">
+              Sign Up
+            </Link>
           </div>
         </Form>
       </Card>
