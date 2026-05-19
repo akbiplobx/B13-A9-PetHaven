@@ -8,7 +8,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: session } = authClient.useSession();
-console.log("Session in Navbar:", session);
+  console.log("Session in Navbar:", session);
+  
   const handleSignOut = async () => {
     await authClient.signOut();
   };
@@ -18,17 +19,16 @@ console.log("Session in Navbar:", session);
       <nav className="flex justify-between items-center py-4 max-w-7xl mx-auto w-full">
         
         {/* Logo + Website Name */}
-<Link href="/" className="flex items-center">
-  {/* ফিক্সড: src পাথের শুরুতে / দেওয়া হয়েছে এবং সাইজ কন্ট্রোল করার জন্য ক্লাস বসানো হয়েছে */}
-  <img 
-    src="/logo.png" 
-    alt="PetHaven Logo" 
-    className="w-15 h-15 object-contain" 
-  />
-  <h3 className="font-black text-2xl tracking-tighter text-slate-800">
-    Pet<span className="text-[#FFA600]">Haven</span>
-  </h3>
-</Link>
+        <Link href="/" className="flex items-center">
+          <img 
+            src="/logo.png" 
+            alt="PetHaven Logo" 
+            className="w-15 h-15 object-contain" 
+          />
+          <h3 className="font-black text-2xl tracking-tighter text-slate-800">
+            Pet<span className="text-[#FFA600]">Haven</span>
+          </h3>
+        </Link>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-700">
@@ -74,6 +74,16 @@ console.log("Session in Navbar:", session);
                       <p className="text-xs text-slate-400 font-medium">Logged in as</p>
                       <p className="text-xs font-bold text-slate-800 truncate">{session.user.email}</p>
                     </div>
+
+                    
+                    <Link 
+                      href="/profile" 
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition font-medium"
+                    >
+                      Profile
+                    </Link>
+
                     <Link 
                       href="/dashboard" 
                       onClick={() => setIsDropdownOpen(false)}
@@ -92,7 +102,6 @@ console.log("Session in Navbar:", session);
               </AnimatePresence>
             </div>
           ) : (
-            // If not logged in: Show Login + Sign Up Buttons together
             <div className="flex items-center gap-4">
               <Link 
                 href="/signin" 
@@ -144,7 +153,11 @@ console.log("Session in Navbar:", session);
                 <>
                   <Link href="/dashboard/my-requests" onClick={() => setIsOpen(false)} className="text-slate-700 font-semibold py-2 hover:text-[#FFA600]">My Requests</Link>
                   <Link href="/dashboard/add-pet" onClick={() => setIsOpen(false)} className="text-slate-700 font-semibold py-2 hover:text-[#FFA600]">Add Pet</Link>
-                  <Link href="/dashboard" onClick={() => setIsOpen(false)} className="text-[#FFA600] font-bold py-2">Dashboard</Link>
+                  
+                  
+                  <Link href="/profile" onClick={() => setIsOpen(false)} className="text-[#FFA600] font-bold py-2">Profile</Link>
+                  
+                  <Link href="/dashboard" onClick={() => setIsOpen(false)} className="text-slate-700 font-semibold py-2 hover:text-[#FFA600]">Dashboard</Link>
                 </>
               )}
               
@@ -164,7 +177,6 @@ console.log("Session in Navbar:", session);
                   </button>
                 </div>
               ) : (
-                // Mobile View Not Logged In Buttons
                 <div className="flex flex-col gap-3 pt-2">
                   <Link 
                     href="/signin" 
