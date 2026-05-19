@@ -85,11 +85,11 @@ export default function SignUpPage() {
         </TextField>
 
         {/* Image URL Input */}
-        {/* <TextField name="image" type="text">
+        <TextField name="image" type="text">
           <Label className="text-sm font-semibold text-slate-700">Image URL (Optional)</Label>
           <Input placeholder="Image URL (Optional)" className="max-h-9" />
           <FieldError className="text-xs" />
-        </TextField> */}
+        </TextField>
 
         {/* Email Input */}
         <TextField
