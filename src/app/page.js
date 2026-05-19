@@ -1,5 +1,10 @@
 import FeaturedPets from "@/components/FeaturedPets";
+import { FosterBanner } from "@/components/FosterBanner";
 import Hero from "@/components/Hero";
+import { HowItWorks } from "@/components/HowItWorks";
+import { PetCareTips } from "@/components/PetCareTips";
+import { SuccessStories } from "@/components/SuccessStories";
+import { WhyAdopt } from "@/components/WhyAdopt";
 
 export default function Home() {
   return (
@@ -9,6 +14,11 @@ export default function Home() {
         <Hero></Hero>    
         <FeaturedPets></FeaturedPets>          
       </main>
+      <WhyAdopt />
+      <HowItWorks />
+      <SuccessStories />
+      <PetCareTips />
+      <FosterBanner />
     </>
   );
 }
