@@ -19,7 +19,7 @@ export default function SignInPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
-  // Next.js হাইড্রেশন এরর প্রতিরোধের জন্য মাউন্ট চেক
+  
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -28,7 +28,7 @@ export default function SignInPage() {
     return null; 
   }
 
-  // ইমেইল-পাসওয়ার্ড সাবমিট হ্যান্ডলার
+  
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -50,7 +50,7 @@ export default function SignInPage() {
     console.log({ data, error });
   };
   
-  // গুগল সাইন-ইন হ্যান্ডলার
+ 
   const handleGoogleSignIn = async () => {
     try {
       await authClient.signIn.social({
@@ -63,15 +63,15 @@ export default function SignInPage() {
   };
 
   return (
-    /* কার্ডের উইডথ সাইন-আপ ফর্মের মতো ছোট (max-w-sm) এবং কমপ্যাক্ট করা হয়েছে */
+    
     <Card className="border mx-auto w-full max-w-sm py-6 px-5 mt-5 shadow-lg rounded-2xl">
       <h1 className="text-center text-xl font-bold text-slate-800 mb-1">Login</h1>
       <p className="text-center text-xs text-slate-400 mb-4">Welcome back to PetHaven!</p>
 
-      {/* gap কমিয়ে gap-3 করা হয়েছে যেন দেখতে সুন্দর ও ছোট লাগে */}
+      
       <Form className="flex w-full flex-col gap-3" onSubmit={onSubmit}>
         
-        {/* Google Sign In Button (type="button" দেওয়া হয়েছে যেন ফর্ম সাবমিট না হয়) */}
+      
         <Button 
           type="button"
           onClick={handleGoogleSignIn} 
@@ -126,14 +126,14 @@ export default function SignInPage() {
         >
           <Label className="text-sm font-semibold text-slate-700">Password</Label>
           <Input placeholder="Enter your password" className="max-h-9" />
-          {/* হাইড্রেশন এবং সাইজ ঠিক রাখতে সাধারণ p ট্যাগ দেওয়া হয়েছে */}
+        
           <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">
             Must be 8+ chars with 1 uppercase & 1 number
           </p>
           <FieldError className="text-xs" />
         </TextField>
 
-        {/* Action Buttons (উচ্চতা h-9 এবং কমপ্যাক্ট সাইজ করা হয়েছে) */}
+     
         <div className="flex gap-2 mt-1">
           <Button 
             type="submit"

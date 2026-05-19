@@ -8,7 +8,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: session } = authClient.useSession();
-
+console.log("Session in Navbar:", session);
   const handleSignOut = async () => {
     await authClient.signOut();
   };
@@ -54,7 +54,7 @@ const Navbar = () => {
                 className="flex items-center gap-2 focus:outline-none"
               >
                 <img 
-                  src={session.user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=User"} 
+                  src={session?.user?.image} 
                   alt="Avatar" 
                   className="w-10 h-10 rounded-full border-2 border-[#FFA600] p-0.5 object-cover cursor-pointer"
                 />
