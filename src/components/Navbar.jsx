@@ -3,6 +3,7 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
+import { ThemeSwitch } from "./ThemeSwitch";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +44,9 @@ const Navbar = () => {
             </>
           )}
         </ul>
+        <div>
+ <ThemeSwitch></ThemeSwitch>
+</div>
 
         {/* Auth Condition (Desktop Layout) */}
         <div className="hidden md:flex items-center gap-4">
@@ -117,7 +121,9 @@ const Navbar = () => {
               </Link>
             </div>
           )}
-        </div>
+          </div>
+
+        
 
         {/* Mobile Hamburger Button */}
         <button 
