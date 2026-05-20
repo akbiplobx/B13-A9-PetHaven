@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Spinner } from "@heroui/react"; 
 import { motion } from "framer-motion"; 
 
-
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -14,7 +13,6 @@ const containerVariants = {
     },
   },
 };
-
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40, scale: 0.95 },
@@ -64,16 +62,18 @@ export default function FeaturedPets() {
   }
 
   return (
-    <section className="py-16  overflow-hidden">
+    <section className="py-16 overflow-hidden bg-transparent transition-colors duration-300">
       <div className="container mx-auto px-4 max-w-7xl">
+        
+        {/* Header Section */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-black">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-800 dark:text-slate-100">
             Meet Our <span className="text-[#FFA600]">Featured Pets</span>
           </h2>
-          <p className="text-slate-500 mt-2">Lovable friends waiting for a new home!</p>
+          <p className="text-slate-500 dark:text-slate-400 mt-2">Lovable friends waiting for a new home!</p>
         </div>
 
-      
+        {/* Pets Grid */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
@@ -91,14 +91,14 @@ export default function FeaturedPets() {
                 whileHover={{ 
                   y: -10, 
                   scale: 1.01,
-                  boxShadow: "0px 20px 30px rgba(255, 166, 0, 0.15)", // হালকা অরেঞ্জ শ্যাডো
+                  boxShadow: "0px 20px 30px rgba(255, 166, 0, 0.12)", 
                   transition: { type: "spring", stiffness: 400, damping: 25 }
                 }}
-                whileTap={{ scale: 0.78 }}
-                className=" rounded-3xl shadow-md overflow-hidden border border-slate-100 flex flex-col hover:shadow-2xl transition-shadow duration-300"
+                whileTap={{ scale: 0.98 }}
+                className="bg-white dark:bg-slate-800 rounded-3xl shadow-md overflow-hidden border border-slate-100 dark:border-slate-700/60 flex flex-col hover:shadow-2xl transition-all duration-300"
               >
                 {/* Pet Image */}
-                <div className="bg-orange-50 h-52 relative overflow-hidden group">
+                <div className="bg-orange-50 dark:bg-slate-900 h-52 relative overflow-hidden group">
                   <motion.img 
                     src={localImagePath} 
                     alt={pet.title || pet.name} 
@@ -114,7 +114,7 @@ export default function FeaturedPets() {
                 {/* Pet Info */}
                 <div className="p-6 flex flex-col flex-grow">
                   <div className="flex justify-between items-center mb-3">
-                    <span className="text-xs font-black text-[#FFA600] uppercase tracking-wider bg-orange-50 px-3 py-1 rounded-full">
+                    <span className="text-xs font-black text-[#FFA600] uppercase tracking-wider bg-orange-50 dark:bg-orange-950/40 px-3 py-1 rounded-full">
                       {pet.category || pet.breed || "Pet"}
                     </span>
                     <span className="text-amber-500 font-bold text-sm">
@@ -122,20 +122,21 @@ export default function FeaturedPets() {
                     </span>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-slate-800 mb-1">
+                  <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">
                     {pet.title || pet.name}
                   </h3>
-                  <p className="text-slate-500 text-sm mb-4 font-medium">
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mb-4 font-medium">
                     {pet.location || pet.instructor || "Healthy"}
                   </p>
                   
                   {/* View Details Button */}
-                  <div className="mt-auto pt-4 border-t border-slate-100">
+                  <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-700/50">
+                   
                     <Link href={`/pet/${pet.id}`} className="block w-full">
                       <motion.button 
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.95 }}
-                        className="w-full bg-[#FFA600] hover:bg-[#E09200] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-orange-100"
+                        className="w-full bg-[#FFA600] hover:bg-[#E09200] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md shadow-orange-100 dark:shadow-none"
                       >
                         View Details
                       </motion.button>

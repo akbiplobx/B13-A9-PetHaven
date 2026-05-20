@@ -23,17 +23,15 @@ const AllPets = () => {
       });
   }, []);
 
-  // নতুন JSON ডাটার 'petName' অনুযায়ী সার্চ ফিল্টার
+  
   const filteredPets = pets.filter((pet) =>
     (pet.petName || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // ইমেজ পাথ ঠিক করার ফাংশন 
-  // (যেমন: '/images/p1.png' বা যেকোনো পাথ থেকে সঠিক নাম নিয়ে 'public/images/' ফোল্ডারকে পয়েন্ট করবে)
-  const getImagePath = (imagePath) => {
+    const getImagePath = (imagePath) => {
     if (!imagePath) return 'https://placehold.co/600x400?text=No+Image';
     const fileName = imagePath.split('/').pop(); 
-    return `/images/${fileName}`; // এখানে '/image/' এর জায়গায় '/images/' করা হয়েছে
+    return `/images/${fileName}`; 
   };
 
   if (loading) {
@@ -47,12 +45,12 @@ const AllPets = () => {
   }
 
   return (
-    <section className="py-16 bg-slate-50 min-h-screen">
+    <section className="py-16  min-h-screen">
       <div className="container mx-auto px-4 max-w-7xl">
         
         {/* Header content and Search input */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-          <h2 className="text-3xl md:text-4xl font-black text-slate-800">
+          <h2 className="text-3xl md:text-4xl font-black ">
             Explore All <span className="text-[#FFA600]">Pets</span>
           </h2>
 
@@ -80,7 +78,7 @@ const AllPets = () => {
                 viewport={{ once: true }} 
                 whileHover={{ y: -8 }} 
                 transition={{ duration: 0.4 }}
-                className="bg-white rounded-3xl shadow-md overflow-hidden border border-slate-100 flex flex-col hover:shadow-xl transition-shadow cursor-pointer"
+                className="rounded-3xl shadow-md overflow-hidden border border-slate-100 flex flex-col hover:shadow-xl transition-shadow cursor-pointer"
               >
                 {/* Image Section */}
                 <div className="bg-orange-50 h-52 relative overflow-hidden">
@@ -105,7 +103,7 @@ const AllPets = () => {
                     </span>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-slate-800 mb-1">
+                  <h3 className="text-xl font-bold  mb-1">
                     {pet.petName} ({pet.gender})
                   </h3>
                   

@@ -8,7 +8,7 @@ export default function MyRequestsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-black text-slate-800">My Adoption Requests</h1>
+        <h1 className="text-2xl font-black ">My Adoption Requests</h1>
         <p className="text-sm text-slate-500 font-medium">Track the status of your adoption applications.</p>
       </div>
 

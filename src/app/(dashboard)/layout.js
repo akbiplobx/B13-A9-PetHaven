@@ -4,7 +4,7 @@ import { FaPlusCircle, FaList, FaHistory, FaHome } from "react-icons/fa";
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+    <div className="flex flex-col md:flex-row min-h-screen">
       
       
       <div className="w-full md:w-64 bg-slate-800 text-white p-5 space-y-6">
