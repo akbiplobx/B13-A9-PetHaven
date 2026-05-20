@@ -109,7 +109,7 @@ const Navbar = () => {
             <div className="flex items-center gap-4">
               <Link 
                 href="/signin" 
-                className="text-sm font-bold text-slate-700 hover:text-[#FFA600] transition"
+                className="text-sm font-bold hover:text-[#FFA600] transition"
               >
                 Login
               </Link>
