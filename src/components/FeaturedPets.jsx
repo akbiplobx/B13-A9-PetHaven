@@ -64,10 +64,10 @@ export default function FeaturedPets() {
   }
 
   return (
-    <section className="py-16 bg-white overflow-hidden">
+    <section className="py-16  overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-black text-slate-800">
+          <h2 className="text-3xl md:text-4xl font-black">
             Meet Our <span className="text-[#FFA600]">Featured Pets</span>
           </h2>
           <p className="text-slate-500 mt-2">Lovable friends waiting for a new home!</p>
@@ -95,7 +95,7 @@ export default function FeaturedPets() {
                   transition: { type: "spring", stiffness: 400, damping: 25 }
                 }}
                 whileTap={{ scale: 0.78 }}
-                className="bg-white rounded-3xl shadow-md overflow-hidden border border-slate-100 flex flex-col hover:shadow-2xl transition-shadow duration-300"
+                className=" rounded-3xl shadow-md overflow-hidden border border-slate-100 flex flex-col hover:shadow-2xl transition-shadow duration-300"
               >
                 {/* Pet Image */}
                 <div className="bg-orange-50 h-52 relative overflow-hidden group">

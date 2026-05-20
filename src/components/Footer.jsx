@@ -4,7 +4,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-24 border-t border-gray-200 bg-white">
+    <footer className="relative mt-24 border-t border-gray-200 ">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
           
@@ -16,7 +16,7 @@ const Footer = () => {
     alt="PetHaven Logo" 
     className="w-15 h-15 object-contain" 
   />
-              <h2 className="text-2xl font-extrabold tracking-tight text-slate-800">
+              <h2 className="text-2xl font-extrabold tracking-tight">
                 Pet<span className="text-[#FFA600]">Haven</span>
               </h2>
             </Link>
@@ -43,7 +43,7 @@ const Footer = () => {
 
           {/* 2. Quick Links */}
           <div>
-            <h3 className="text-xs font-bold text-slate-800 mb-6 uppercase tracking-widest">
+            <h3 className="text-xs font-bold mb-6 uppercase tracking-widest">
               Browse
             </h3>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
@@ -55,7 +55,7 @@ const Footer = () => {
 
           {/* 3. Contact Information (Requirement) */}
           <div>
-            <h3 className="text-xs font-bold text-slate-800 mb-6 uppercase tracking-widest">
+            <h3 className="text-xs font-bold  mb-6 uppercase tracking-widest">
               Contact Us
             </h3>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
@@ -77,7 +77,7 @@ const Footer = () => {
 
           {/* 4. Legal Section */}
           <div>
-            <h3 className="text-xs font-bold text-slate-800 mb-6 uppercase tracking-widest">
+            <h3 className="text-xs font-bold  mb-6 uppercase tracking-widest">
               Company
             </h3>
             <ul className="space-y-4 text-sm font-medium text-slate-500">

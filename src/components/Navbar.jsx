@@ -16,7 +16,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="border-b px-5 sticky top-0 bg-white/80 backdrop-blur-md z-50">
+    <div className="border-b px-5 sticky top-0  backdrop-blur-md z-50">
       <nav className="flex justify-between items-center py-4 max-w-7xl mx-auto w-full">
         
         {/* Logo + Website Name */}
@@ -26,13 +26,13 @@ const Navbar = () => {
             alt="PetHaven Logo" 
             className="w-15 h-15 object-contain" 
           />
-          <h3 className="font-black text-2xl tracking-tighter text-slate-800">
+          <h3 className="font-black text-2xl tracking-tighter">
             Pet<span className="text-[#FFA600]">Haven</span>
           </h3>
         </Link>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-700">
+        <ul className="hidden md:flex items-center gap-8 text-sm font-semibold ">
           <li><Link href="/" className="hover:text-[#FFA600] transition">Home</Link></li>
           <li><Link href="/allpets" className="hover:text-[#FFA600] transition">All Pets</Link></li>
           
@@ -62,7 +62,7 @@ const Navbar = () => {
                   alt="Avatar" 
                   className="w-10 h-10 rounded-full border-2 border-[#FFA600] p-0.5 object-cover cursor-pointer"
                 />
-                <span className="text-sm font-bold text-slate-800 hidden lg:block">{session.user.name}</span>
+                <span className="text-sm font-bold  hidden lg:block">{session.user.name}</span>
               </button>
 
               {/* Profile Dropdown Content */}
