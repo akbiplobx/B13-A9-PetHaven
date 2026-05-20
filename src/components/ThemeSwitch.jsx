@@ -12,7 +12,7 @@ export function ThemeSwitch() {
       {({isSelected}) => (
         <>
           <Switch.Control
-            className={`h-[31px] w-[51px] bg-dark-500 ${isSelected ? "bg-[#FFA600] shadow-[0_0_12px_rgba(6,182,212,0.5)]" : ""}`}
+            className={`h-[31px] w-[51px] bg-[#FFA600] ${isSelected ? "bg-[#1D293D] shadow-[0_0_12px_rgba(6,182,212,0.5)]" : ""}`}
           >
             <Switch.Thumb
               className={`size-[27px] bg-white shadow-sm ${isSelected ? "ms-[22px] shadow-lg" : ""}`}
