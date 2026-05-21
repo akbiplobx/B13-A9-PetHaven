@@ -7,7 +7,7 @@ export default function MyListingsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-black text-slate-800">My Pet Listings</h1>
+        <h1 className="text-2xl font-black ">My Pet Listings</h1>
         <p className="text-sm text-slate-500 font-medium">Manage the pets you have posted for adoption.</p>
       </div>
 

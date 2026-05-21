@@ -37,12 +37,13 @@ const Navbar = () => {
           <li><Link href="/allpets" className="hover:text-[#FFA600] transition">All Pets</Link></li>
           
           {/* Private Routes (Only show if logged in) */}
-          {session && (
+          {/* {session && (
             <>
               <li><Link href="/dashboard/my-requests" className="hover:text-[#FFA600] transition">My Requests</Link></li>
               <li><Link href="/dashboard/add-pet" className="hover:text-[#FFA600] transition">Add Pet</Link></li>
             </>
-          )}
+          )} */}
+          
         </ul>
         <div>
  <ThemeSwitch></ThemeSwitch>
