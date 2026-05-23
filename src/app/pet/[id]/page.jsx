@@ -228,7 +228,7 @@ export default function PetDetails() {
 
                 {/* Your Name */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Your Name</label>
+                  <label className="text-xs font-bold">Your Name</label>
                   <input 
                     type="text" 
                     value={currentUser.name} 
@@ -250,26 +250,26 @@ export default function PetDetails() {
 
                 {/* Preferred Pickup Date */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Preferred Pickup Date</label>
+                  <label className="text-xs font-bold ">Preferred Pickup Date</label>
                   <input 
                     type="date" 
                     name="pickupDate" 
                     required 
                     disabled={pet.status === 'adopted'}
-                    className="w-full  text-slate-800  font-semibold p-3 rounded-xl border border-slate-200 dark:border-slate-700 outline-none text-sm focus:border-rose-500 dark:focus:border-rose-500 transition-all"
+                    className="w-full    font-semibold p-3 rounded-xl border border-slate-200  outline-none text-sm focus:border-rose-500 -rose-500 transition-all"
                   />
                 </div>
 
                 {/* Message to Owner */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Message to Owner</label>
+                  <label className="text-xs font-bold ">Message to Owner</label>
                   <textarea 
                     name="message" 
                     rows="3" 
                     required
                     disabled={pet.status === 'adopted'}
                     placeholder={`Tell the owner why you'd be a great match for ${pet.petName}...`}
-                    className="w-full  font-semibold p-3 rounded-xl border border-slate-200 dark:border-slate-700 outline-none text-sm focus:border-rose-500 dark:focus:border-rose-500 transition-all resize-none"
+                    className="w-full  font-semibold p-3 rounded-xl border border-slate-200   text-sm focus:border-rose-500  resize-none"
                   ></textarea>
                 </div>
 
@@ -279,8 +279,8 @@ export default function PetDetails() {
                   disabled={pet.status === 'adopted' || submitting} 
                   className={`w-full py-3.5 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 text-white shadow-md ${
                     pet.status === 'adopted' 
-                      ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none' 
-                      : 'bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 active:scale-[0.98]'
+                      ? 'bg-[#FFA600] ' 
+                      : 'bg-[#FFA600]  active:scale-[0.98]'
                   }`}
                 >
                   {submitting ? (
