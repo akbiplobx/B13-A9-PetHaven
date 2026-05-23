@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; 
 import Link from 'next/link';
 import { Spinner } from "@heroui/react"; 
 import { motion } from "framer-motion"; 
@@ -29,6 +30,7 @@ const cardVariants = {
 };
 
 export default function FeaturedPets() {
+  const router = useRouter();
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
@@ -37,17 +39,27 @@ export default function FeaturedPets() {
     setIsMounted(true); 
     setLoading(true);
     
-    fetch('/data.json')
+   
+    fetch('http://localhost:5000/pets')
       .then((res) => res.json())
       .then((data) => {
+       
         setPets(data.slice(0, 6));
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error loading local data:", err);
+        console.error("Error loading database data for featured pets:", err);
         setLoading(false);
       });
   }, []);
+
+  
+  const getImagePath = (imagePath, index) => {
+    if (!imagePath) return `/images/p${index + 1}.png`; // ফলব্যাক লোকাল ইমেজ
+    if (imagePath.startsWith('http')) return imagePath; 
+    const fileName = imagePath.split('/').pop(); 
+    return `/images/${fileName}`; 
+  };
 
   if (loading) {
     return (
@@ -82,11 +94,12 @@ export default function FeaturedPets() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {pets.map((pet, index) => {
-            const localImagePath = `/images/p${index + 1}.png`;
+           
+            const petId = pet._id || pet.id;
 
             return (
               <motion.div 
-                key={pet.id}
+                key={petId}
                 variants={cardVariants}
                 whileHover={{ 
                   y: -10, 
@@ -95,13 +108,14 @@ export default function FeaturedPets() {
                   transition: { type: "spring", stiffness: 400, damping: 25 }
                 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-white dark:bg-slate-800 rounded-3xl shadow-md overflow-hidden border border-slate-100 dark:border-slate-700/60 flex flex-col hover:shadow-2xl transition-all duration-300"
+                onClick={() => router.push(`/pet/${petId}`)} // কার্ডে ক্লিক করলেও সেফলি ডায়নামিক পেজে যাবে
+                className="bg-white dark:bg-slate-800 rounded-3xl shadow-md overflow-hidden border border-slate-100 dark:border-slate-700/60 flex flex-col hover:shadow-2xl transition-all duration-300 cursor-pointer"
               >
                 {/* Pet Image */}
                 <div className="bg-orange-50 dark:bg-slate-900 h-52 relative overflow-hidden group">
                   <motion.img 
-                    src={localImagePath} 
-                    alt={pet.title || pet.name} 
+                    src={getImagePath(pet.imageUrl || pet.image, index)} 
+                    alt={pet.petName || pet.title || pet.name} 
                     className="absolute inset-0 w-full h-full object-cover"
                     whileHover={{ scale: 1.05 }} 
                     transition={{ duration: 0.4, ease: "easeOut" }}
@@ -115,24 +129,23 @@ export default function FeaturedPets() {
                 <div className="p-6 flex flex-col flex-grow">
                   <div className="flex justify-between items-center mb-3">
                     <span className="text-xs font-black text-[#FFA600] uppercase tracking-wider bg-orange-50 dark:bg-orange-950/40 px-3 py-1 rounded-full">
-                      {pet.category || pet.breed || "Pet"}
+                      {pet.breed || pet.species || pet.category || "Pet"}
                     </span>
                     <span className="text-amber-500 font-bold text-sm">
-                      ⭐ {pet.rating || "4.8"}
+                      BDT {pet.adoptionFee || "Free"}
                     </span>
                   </div>
                   
                   <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">
-                    {pet.title || pet.name}
+                    {pet.petName || pet.title || pet.name}
                   </h3>
                   <p className="text-slate-500 dark:text-slate-400 text-sm mb-4 font-medium">
-                    {pet.location || pet.instructor || "Healthy"}
+                    {pet.location || "Healthy"}
                   </p>
                   
                   {/* View Details Button */}
-                  <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-700/50">
-                   
-                    <Link href={`/pet/${pet.id}`} className="block w-full">
+                  <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-700/50" onClick={(e) => e.stopPropagation()}>
+                    <Link href={`/pet/${petId}`} className="block w-full">
                       <motion.button 
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.95 }}
