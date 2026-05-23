@@ -25,7 +25,7 @@ export function WhyAdopt() {
       
       {/* Section Header */}
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-black tracking-tight mb-2 text-slate-800 dark:text-white">
+        <h2 className="text-3xl font-black tracking-tight mb-2 text-black">
           Why Adopt Pets?
         </h2>
         <p className="text-slate-500 dark:text-slate-400">
@@ -43,7 +43,7 @@ export function WhyAdopt() {
               <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-full">
                 {item.icon}
               </div>
-              <h3 className="text-xl font-bold text-slate-800 dark:text-white">
+              <h3 className="text-xl font-bold text-black">
                 {item.title}
               </h3>
               <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">

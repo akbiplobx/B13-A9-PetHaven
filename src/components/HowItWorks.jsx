@@ -23,7 +23,7 @@ export function HowItWorks() {
         
         {/* সেকশন হেডার */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-black tracking-tight mb-2 text-slate-800 dark:text-white">
+          <h2 className="text-3xl font-black tracking-tight mb-2 text-black">
             How PetHaven Works
           </h2>
           <p className="text-slate-500 dark:text-slate-400">
@@ -38,7 +38,7 @@ export function HowItWorks() {
               <span className="text-5xl font-black text-orange-200 dark:text-slate-800 mb-2">
                 {item.step}
               </span>
-              <h3 className="text-xl font-bold mb-2 text-slate-800 dark:text-white">
+              <h3 className="text-xl font-bold mb-2 text-black">
                 {item.title}
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xs leading-relaxed">

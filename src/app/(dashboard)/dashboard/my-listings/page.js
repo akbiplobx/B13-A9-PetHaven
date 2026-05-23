@@ -1,114 +1,207 @@
 "use client";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { Spinner } from "@heroui/react";
+import { motion } from "framer-motion";
+import { Eye, Edit3, Users, Trash2, Plus, LayoutDashboard } from 'lucide-react';
+import Link from 'next/link';
 
-import { useEffect, useState } from "react";
-
-export default function MyListingsPage() {
+export default function MyListings() {
+  const router = useRouter();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   
-  useEffect(() => {
-    const fetchMyListings = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/my-listings`);
-        const data = await res.json();
-        setListings(data);
-      } catch (error) {
-        console.error("Error fetching listings:", error);
-      } finally {
+  const fetchListings = useCallback(() => {
+    setLoading(true);
+    fetch('http://localhost:5000/my-listings', { cache: 'no-store' }) 
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch listings");
+        return res.json();
+      })
+      .then((data) => {
+        setListings(Array.isArray(data) ? data : []);
         setLoading(false);
-      }
-    };
-
-    fetchMyListings();
+      })
+      .catch((err) => {
+        console.error("Error fetching my listings:", err);
+        setListings([]); 
+        setLoading(false); 
+      });
   }, []);
 
+  
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
+
+ 
+  const totalListings = listings.length;
+  const availableCount = listings.filter(pet => pet.status !== 'adopted').length;
+  const adoptedCount = listings.filter(pet => pet.status === 'adopted').length;
+
+  
+  const getImagePath = (imagePath) => {
+    if (!imagePath) {
+      return 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600&auto=format&fit=crop';
+    }
+    if (imagePath.startsWith('http') || imagePath.startsWith('data:image')) return imagePath;
+    const fileName = imagePath.split('/').pop();
+    return `/images/${fileName}`;
+  };
+
+
+  const handleDelete = async (id) => {
+    if (confirm("Are you sure you want to delete this pet listing?")) {
+      try {
+        const res = await fetch(`http://localhost:5000/pet/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          setListings(listings.filter(item => (item._id || item.id) !== id));
+        } else {
+          alert("Could not delete from backend.");
+        }
+      } catch (error) {
+        console.error("Error deleting pet:", error);
+      }
+    }
+  };
+
   if (loading) {
-    return <div className="p-5 font-medium text-slate-500">Loading your pet listings...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <Spinner label="Loading your listings..." className="text-[#FFA600]" size="lg" />
+      </div>
+    );
   }
 
   return (
-    <div className="p-5 max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-black ">My Pet Listings</h1>
-        <p className="text-sm text-slate-500 font-medium">Manage the pets you have posted for adoption.</p>
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 bg-transparent text-slate-900 dark:text-white transition-colors duration-300">
+      
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full w-max mb-2">
+            <LayoutDashboard size={14} /> My Dashboard
+          </div>
+          <h1 className="text-3xl font-black tracking-tight">
+            My <span className="text-rose-500">Listings</span>
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+            Manage your pet listings and adoption requests.
+          </p>
+        </div>
+        
+        <Link href="/dashboard/add-pet">
+          <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all text-sm w-full sm:w-auto">
+            <Plus size={18} /> Add New Pet
+          </button>
+        </Link>
       </div>
 
+      {/* Analytics Counter Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-sm text-center space-y-1">
+          <p className="text-3xl font-black text-rose-500">{totalListings}</p>
+          <p className="text-sm font-bold text-slate-500 dark:text-slate-400">Total Listings</p>
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-sm text-center space-y-1">
+          <p className="text-3xl font-black text-emerald-500">{availableCount}</p>
+          <p className="text-sm font-bold text-slate-500 dark:text-slate-400">Available</p>
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-sm text-center space-y-1">
+          <p className="text-3xl font-black text-blue-500">{adoptedCount}</p>
+          <p className="text-sm font-bold text-slate-500 dark:text-slate-400">Adopted</p>
+        </div>
+      </div>
+
+      {/* Listings Grid */}
       {listings.length === 0 ? (
-        <div className="text-slate-500 font-medium p-5 border border-dashed border-slate-300 rounded-2xl text-center">
-          No pets posted yet. Go to "Add Pet" to post one!
+        <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80">
+          <p className="text-slate-400 font-medium">No listings found. Start by adding a pet!</p>
         </div>
       ) : (
-      
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listings.map((item) => (
-            <div 
-              key={item._id} 
-              className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between gap-4"
-            >
-            
-              <div className="flex gap-4 items-center">
-                
-                {item.imageUrl ? (
-                  <img 
-                    src={item.imageUrl} 
-                    alt={item.petName} 
-                    className="w-20 h-20 object-cover rounded-xl border border-slate-100 flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-20 h-20 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 text-xs flex-shrink-0">
-                    No Image
-                  </div>
-                )}
-                
-                <div className="space-y-0.5 min-w-0">
-                 
-                  <div className="flex flex-wrap gap-1">
-                    <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                      item.gender === "Male" ? "bg-blue-50 text-blue-600" : "bg-pink-50 text-pink-600"
-                    }`}>
-                      {item.gender}
-                    </span>
-                    <span className="text-[9px] font-black bg-purple-50 text-purple-600 uppercase tracking-wider px-2 py-0.5 rounded-full truncate">
-                      {item.species || "Pet"}
-                    </span>
-                  </div>
-                  
-                 
-                  <h3 className="text-lg font-bold text-slate-800 leading-tight truncate">{item.petName}</h3>
-                  
-                 
-                  <p className="text-xs text-slate-500 font-medium truncate">
-                    {item.breed} • {item.age} {parseInt(item.age) > 1 ? "Years" : "Year/Month"}
-                  </p>
-                  
-                 
-                  <p className="text-xs font-bold text-[#FFA600] truncate">
-                    BDT {item.adoptionFee} <span className="text-slate-400 font-normal ml-0.5">({item.location})</span>
-                  </p>
-                </div>
-              </div>
-              
-              
-              <div className="flex gap-2 border-t border-slate-100 pt-3 justify-end mt-auto">
-                <button 
-                  onClick={() => console.log("Edit ID:", item._id)} 
-                  className="p-2 bg-slate-50 hover:bg-orange-50 text-slate-500 hover:text-[#FFA600] rounded-xl border border-slate-200 transition-colors"
-                  title="Edit"
-                >
-                  <i className="fa-solid fa-pen-to-square text-sm"></i>
-                </button>
-                <button 
-                  onClick={() => console.log("Delete ID:", item._id)} 
-                  className="p-2 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-500 rounded-xl border border-slate-200 transition-colors"
-                  title="Delete"
-                >
-                  <i className="fa-solid fa-trash-can text-sm"></i>
-                </button>
-              </div>
+          {listings.map((pet) => {
+            const petId = pet._id || pet.id;
+            const isAdopted = pet.status === 'adopted';
 
-            </div>
-          ))}
+            return (
+              <motion.div
+                key={petId}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-sm flex flex-col group hover:shadow-md transition-all duration-300"
+              >
+                {/* Image Holder */}
+                <div className="h-48 bg-slate-100 dark:bg-slate-950 relative overflow-hidden">
+                  <img
+                    src={getImagePath(pet.imageUrl || pet.image)}
+                    alt={pet.petName || "Pet"}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    onError={(e) => {
+                      e.target.onerror = null; 
+                      e.target.src = 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=600&auto=format&fit=crop';
+                    }}
+                  />
+                  <span className={`absolute top-4 right-4 text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full text-white ${isAdopted ? 'bg-rose-500' : 'bg-emerald-500'}`}>
+                    {isAdopted ? 'Adopted' : 'Available'}
+                  </span>
+                </div>
+
+                {/* Content Details */}
+                <div className="p-5 flex-grow flex flex-col justify-between space-y-4">
+                  <div>
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="text-xl font-extrabold tracking-tight truncate pr-2">
+                        {pet.petName || pet.title || "Unnamed Pet"}
+                      </h3>
+                      <span className="text-rose-500 font-extrabold text-base whitespace-nowrap">
+                        BDT {pet.adoptionFee || "0"}
+                      </span>
+                    </div>
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      {pet.breed || pet.species || "Companion"} • {pet.age || "Age N/A"}
+                    </p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800/60">
+                    <div className="grid grid-cols-2 gap-2">
+                      <button 
+                        onClick={() => router.push(`/pet/${petId}`)}
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800 transition-colors"
+                      >
+                        <Eye size={14} /> View
+                      </button>
+                      
+                      <button 
+                        onClick={() => router.push(`/dashboard/edit-pet/${petId}`)}
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800 text-amber-500 hover:text-amber-600 transition-colors"
+                      >
+                        <Edit3 size={14} /> Edit
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button 
+                        onClick={() => router.push(`/dashboard/requests/${petId}`)}
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-blue-500/20 rounded-xl text-xs font-bold bg-blue-500/5 hover:bg-blue-500/10 text-blue-500 transition-colors"
+                      >
+                        <Users size={14} /> Requests
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(petId)}
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-rose-500/20 rounded-xl text-xs font-bold bg-rose-500/5 hover:bg-rose-500/10 text-rose-500 transition-colors"
+                      >
+                        <Trash2 size={14} /> Delete
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       )}
     </div>

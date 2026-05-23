@@ -21,7 +21,7 @@ export function SuccessStories() {
       <div className="max-w-7xl mx-auto px-5">
         
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-black tracking-tight mb-2 text-slate-800 dark:text-white">
+          <h2 className="text-3xl font-black tracking-tight mb-2 text-black">
             Happy Tails (Success Stories)
           </h2>
           <p className="text-slate-500 dark:text-slate-400">
@@ -39,7 +39,7 @@ export function SuccessStories() {
                 <div className="flex items-center gap-3">
                   <Avatar src={story.img} size="md" className="border border-[#FFA600]" />
                   <div>
-                    <h4 className="font-bold text-sm text-slate-800 dark:text-white">
+                    <h4 className="font-bold text-sm text-black">
                       {story.name}
                     </h4>
                     <p className="text-xs text-slate-400 font-medium">

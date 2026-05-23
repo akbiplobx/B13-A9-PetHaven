@@ -64,7 +64,7 @@ export default function AddPetPage() {
       <Toaster position="top-center" reverseOrder={false} />
       
       <div className="mb-6">
-        <h1 className="text-2xl font-black text-slate-800 dark:text-white">Add a Pet for Adoption</h1>
+        <h1 className="text-2xl font-black text-black">Add a Pet for Adoption</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
           Fill in the details to find a loving home for a furry friend.
         </p>

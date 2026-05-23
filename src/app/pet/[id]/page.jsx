@@ -3,19 +3,25 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Spinner } from "@heroui/react";
 import { motion } from "framer-motion";
-import { ArrowLeft, MapPin, Calendar, DollarSign, Tag, Heart, Info } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, DollarSign, Tag, Heart, Info, Send } from 'lucide-react';
 
 export default function PetDetails() {
   const { id } = useParams();
   const router = useRouter();
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  
+  const currentUser = {
+    name: "A K Biplob",
+    email: "akbiplob24@gmail.com"
+  };
 
   useEffect(() => {
     if (!id) return;
 
     setLoading(true);
-    
     fetch(`http://localhost:5000/pet/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Pet not found");
@@ -32,9 +38,44 @@ export default function PetDetails() {
   }, [id]);
 
   
+  const handleAdoptSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    const formData = new FormData(e.target);
+    const adoptionPayload = {
+      petName: pet?.petName || "Pet",
+      buyerName: currentUser.name,
+      buyerEmail: currentUser.email,
+      pickupDate: formData.get('pickupDate'),
+      message: formData.get('message')
+    };
+
+    try {
+      const res = await fetch('http://localhost:5000/adoption-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(adoptionPayload)
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert(`🎉 Request to adopt ${pet.petName} submitted successfully!`);
+        router.push('/dashboard/my-requests'); 
+      } else {
+        alert("Submission failed. Try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting adoption request:", error);
+      alert("Something went wrong connecting to server.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const getImagePath = (imagePath) => {
-    if (!imagePath) return 'https://placehold.co/800x600?text=No+Image';
-    if (imagePath.startsWith('http')) return imagePath;
+    if (!imagePath) return 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600&auto=format&fit=crop';
+    if (imagePath.startsWith('http') || imagePath.startsWith('data:image')) return imagePath;
     const fileName = imagePath.split('/').pop();
     return `/images/${fileName}`;
   };
@@ -54,7 +95,7 @@ export default function PetDetails() {
           <div className="w-16 h-16 bg-rose-100 dark:bg-rose-950/40 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Info size={32} />
           </div>
-          <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-2">Pet Not Found!</h2>
+          <h2 className="text-2xl font-black text-black mb-2">Pet Not Found!</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">We couldn't find the pet you are looking for. It might have been adopted already.</p>
           <button onClick={() => router.push('/allpets')} className="w-full bg-[#FFA600] hover:bg-[#E09200] text-white font-bold py-3 rounded-xl transition-all shadow-md">
             Back to All Pets
@@ -80,102 +121,178 @@ export default function PetDetails() {
         {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Column: Image Section */}
-          <div className="lg:col-span-7">
+          {/* 🐾 Left Column: Pet Information */}
+          <div className="lg:col-span-7 space-y-6">
             <motion.div 
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4 }}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm relative group"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm relative"
             >
               <img 
                 src={getImagePath(pet.imageUrl || pet.image)} 
                 alt={pet.petName} 
-                className="w-full h-[400px] md:h-[500px] object-cover"
+                className="w-full h-[350px] md:h-[450px] object-cover"
               />
               <span className={`absolute top-6 right-6 text-xs font-black px-4 py-1.5 rounded-full text-white tracking-wider uppercase shadow-md ${pet.status === 'adopted' ? 'bg-rose-500' : 'bg-emerald-500'}`}>
-                {pet.status === 'adopted' ? 'Adopted' : 'Available for Adoption'}
+                {pet.status === 'adopted' ? 'Adopted' : 'Available'}
               </span>
             </motion.div>
+
+            {/* Title Block */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">{pet.petName}</h1>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="text-xs font-bold text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full">{pet.species || "Pet"}</span>
+                  <span className="text-xs font-bold text-[#FFA600] bg-orange-500/10 px-3 py-1 rounded-full">{pet.breed || "Companion"}</span>
+                  <span className="text-xs font-bold text-purple-500 bg-purple-500/10 px-3 py-1 rounded-full">{pet.gender || "Gender N/A"}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-bold text-slate-400 block">Adoption Fee</span>
+                <span className="text-2xl font-black text-rose-500">BDT {pet.adoptionFee || "0"}</span>
+              </div>
+            </div>
+
+            {/* Info Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 text-center shadow-xs">
+                <span className="text-xs font-bold text-slate-400 block uppercase">Species</span>
+                <span className="text-sm font-black mt-1 block">{pet.species || "N/A"}</span>
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 text-center shadow-xs">
+                <span className="text-xs font-bold text-slate-400 block uppercase">Breed</span>
+                <span className="text-sm font-black mt-1 block truncate">{pet.breed || "N/A"}</span>
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 text-center shadow-xs">
+                <span className="text-xs font-bold text-slate-400 block uppercase">Age</span>
+                <span className="text-sm font-black mt-1 block">{pet.age || "N/A"}</span>
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 text-center shadow-xs">
+                <span className="text-xs font-bold text-slate-400 block uppercase">Gender</span>
+                <span className="text-sm font-black mt-1 block">{pet.gender || "N/A"}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
+                <MapPin className="text-rose-500" size={20} />
+                <div>
+                  <span className="text-xs font-bold text-slate-400 block uppercase">Location</span>
+                  <span className="text-sm font-black truncate max-w-[200px] block">{pet.location || "Not specified"}</span>
+                </div>
+              </div>
+              <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
+                <Heart className="text-emerald-500" size={20} />
+                <div>
+                  <span className="text-xs font-bold text-slate-400 block uppercase">Health Status</span>
+                  <span className="text-sm font-black block">Excellent</span>
+                </div>
+              </div>
+            </div>
+
+            {/* About */}
+            <div className="space-y-2 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80">
+              <h3 className="text-base font-black">About {pet.petName}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                {pet.description || "No specific description available. This wonderful pet is looking for a caring and loving home. Contact us for detailed info."}
+              </p>
+            </div>
           </div>
 
-          {/* Right Column: Information Section */}
-          <div className="lg:col-span-5 space-y-6">
+         
+          <div className="lg:col-span-5">
             <motion.div 
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="bg-white dark:bg-slate-900 p-6 md:p-8 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm space-y-6"
+              className="bg-white dark:bg-slate-900 p-6 md:p-8 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-md space-y-5 sticky top-6"
             >
-              {/* Pet Title & Badges */}
               <div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="text-xs font-black text-[#FFA600] uppercase tracking-wider bg-orange-500/10 px-3 py-1 rounded-full flex items-center gap-1">
-                    <Tag size={12} /> {pet.breed || pet.species}
-                  </span>
-                  <span className="text-xs font-black text-purple-500 uppercase tracking-wider bg-purple-500/10 px-3 py-1 rounded-full">
-                    {pet.gender}
-                  </span>
-                </div>
-                <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
-                  {pet.petName}
-                </h1>
+                <h2 className="text-lg font-black flex items-center gap-2 text-black">
+                  <Heart size={18} className="text-rose-500 fill-rose-500" /> Request to Adopt {pet.petName}
+                </h2>
+                {/* <p className="text-xs text-slate-400 font-medium mt-0.5">Fill out this form and the owner will review your request.</p> */}
               </div>
 
-              <hr className="border-slate-100 dark:border-slate-800" />
-
-              {/* Grid Information Boxes */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80">
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
-                    <Calendar size={14} className="text-blue-500" /> Age
-                  </div>
-                  <p className="text-base font-black text-slate-800 dark:text-slate-200">{pet.age}</p>
+              <form onSubmit={handleAdoptSubmit} className="space-y-4">
+                {/* Pet Name (Disabled/Readonly) */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Pet Name</label>
+                  <input 
+                    type="text" 
+                    value={pet.petName} 
+                    readOnly 
+                    className="w-full bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-bold p-3 rounded-xl border border-slate-200/60 dark:border-slate-700/50 outline-none text-sm cursor-not-allowed"
+                  />
                 </div>
 
-                <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80">
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">
-                    <MapPin size={14} className="text-rose-500" /> Location
-                  </div>
-                  <p className="text-base font-black text-slate-800 dark:text-slate-200 truncate">{pet.location}</p>
+                {/* Your Name */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Your Name</label>
+                  <input 
+                    type="text" 
+                    value={currentUser.name} 
+                    readOnly 
+                    className="w-full bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-bold p-3 rounded-xl border border-slate-200/60 dark:border-slate-700/50 outline-none text-sm cursor-not-allowed"
+                  />
                 </div>
-              </div>
 
-              {/* Adoption Fee Card */}
-              <div className="bg-gradient-to-r from-orange-500/10 to-amber-500/10 p-5 rounded-2xl border border-orange-500/20 flex justify-between items-center">
-                <div>
-                  <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Adoption Fee</h4>
-                  <p className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-0.5">BDT {pet.adoptionFee}</p>
+                {/* Your Email */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Your Email</label>
+                  <input 
+                    type="email" 
+                    value={currentUser.email} 
+                    readOnly 
+                    className="w-full bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-bold p-3 rounded-xl border border-slate-200/60 dark:border-slate-700/50 outline-none text-sm cursor-not-allowed"
+                  />
                 </div>
-                <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-[#FFA600] shadow-sm border border-orange-500/10">
-                  <DollarSign size={24} />
+
+                {/* Preferred Pickup Date */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Preferred Pickup Date</label>
+                  <input 
+                    type="date" 
+                    name="pickupDate" 
+                    required 
+                    disabled={pet.status === 'adopted'}
+                    className="w-full  text-slate-800  font-semibold p-3 rounded-xl border border-slate-200 dark:border-slate-700 outline-none text-sm focus:border-rose-500 dark:focus:border-rose-500 transition-all"
+                  />
                 </div>
-              </div>
 
-              {/* Description */}
-              <div className="space-y-2">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wider">About {pet.petName}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  {pet.description || "No specific description available for this wonderful pet. Contact us to learn more details about its health, vaccinations, and behavior."}
-                </p>
-              </div>
+                {/* Message to Owner */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400">Message to Owner</label>
+                  <textarea 
+                    name="message" 
+                    rows="3" 
+                    required
+                    disabled={pet.status === 'adopted'}
+                    placeholder={`Tell the owner why you'd be a great match for ${pet.petName}...`}
+                    className="w-full  font-semibold p-3 rounded-xl border border-slate-200 dark:border-slate-700 outline-none text-sm focus:border-rose-500 dark:focus:border-rose-500 transition-all resize-none"
+                  ></textarea>
+                </div>
 
-              {/* Action Adoption Button */}
-              <div className="pt-4">
+                {/* Submit Button */}
                 <button 
-                  disabled={pet.status === 'adopted'} 
-                  onClick={() => router.push('/dashboard/my-requests')} 
-                  className={`w-full py-4 rounded-2xl text-base font-black transition-all flex items-center justify-center gap-2 text-white ${
+                  type="submit"
+                  disabled={pet.status === 'adopted' || submitting} 
+                  className={`w-full py-3.5 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 text-white shadow-md ${
                     pet.status === 'adopted' 
                       ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none' 
-                      : 'bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 active:scale-[0.99]'
+                      : 'bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 active:scale-[0.98]'
                   }`}
                 >
-                  <Heart size={20} fill={pet.status === 'adopted' ? 'none' : 'currentColor'} />
-                  {pet.status === 'adopted' ? 'Already Adopted' : 'Proceed to Adopt'}
+                  {submitting ? (
+                    <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                  ) : (
+                    <>
+                      <Send size={15} />
+                      {pet.status === 'adopted' ? 'Already Adopted' : `Adopt ${pet.petName}`}
+                    </>
+                  )}
                 </button>
-              </div>
-
+              </form>
             </motion.div>
           </div>
 

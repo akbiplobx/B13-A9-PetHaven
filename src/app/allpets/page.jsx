@@ -33,7 +33,7 @@ const AllPets = () => {
     }
   };
 
-  
+
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       fetchPetsFromDatabase();
@@ -42,10 +42,10 @@ const AllPets = () => {
     return () => clearTimeout(delayDebounce);
   }, [searchTerm, selectedSpecies, sortBy]);
 
-  
+ 
   const getImagePath = (imagePath) => {
-    if (!imagePath) return 'https://placehold.co/600x400?text=No+Image';
-    if (imagePath.startsWith('http')) return imagePath; 
+    if (!imagePath) return 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600&auto=format&fit=crop';
+    if (imagePath.startsWith('http') || imagePath.startsWith('data:image')) return imagePath; 
     const fileName = imagePath.split('/').pop(); 
     return `/images/${fileName}`; 
   };
@@ -54,7 +54,7 @@ const AllPets = () => {
     <section className="py-16 min-h-screen bg-slate-50 dark:bg-[#030712] text-slate-900 dark:text-white transition-colors duration-300">
       <div className="container mx-auto px-4 max-w-7xl">
         
-        
+        {/* Header Section */}
         <div className="mb-6">
           <span className="text-xs font-bold text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
             All Available Pets
@@ -62,85 +62,85 @@ const AllPets = () => {
           <h2 className="text-3xl md:text-5xl font-black mt-3">
             Browse <span className="text-[#FFA600]">All Pets</span>
           </h2>
-          <p className="text-slate-700 dark:text-slate-400 text-sm mt-2 font-medium">{pets.length} pets available for adoption</p>
+          <p className="text-slate-700 dark:text-slate-400 text-sm mt-2 font-medium">
+            {pets.length} pets available for adoption
+          </p>
         </div>
 
         {/* 🔍 Filter & Search Bar Box */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 shadow-sm mb-12 transition-colors duration-300">
           
-  {/* Search Input */}
-  <div className="flex flex-col justify-end">
-    <label className="block font-black text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">
-      Search by name
-    </label>
-    <Input
-      type="text"
-      placeholder="Search pets..."
-      variant="bordered"
-      radius="xl"
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className="w-full "
-      classNames={{
-        inputWrapper: "border-2 hover:border-slate-300 focus-within:!border-[#FFA600] dark:border-slate-800 dark:hover:border-slate-700 transition-all h-[44px]",
-        input: "font-medium text-sm"
-      }}
-    />
-  </div>
+          {/* Search Input */}
+          <div className="flex flex-col justify-end">
+            <label className="block font-black text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">
+              Search by name
+            </label>
+            <Input
+              type="text"
+              placeholder="Search pets..."
+              variant="bordered"
+              radius="xl"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full "
+              classNames={{
+                inputWrapper: "border-2 hover:border-slate-300 focus-within:!border-[#FFA600] dark:border-slate-800 dark:hover:border-slate-700 transition-all h-[44px]",
+                input: "font-medium text-sm"
+              }}
+            />
+          </div>
 
-  {/* Filter by Species */}
-  <div>
-    <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">
-      Filter by species
-    </label>
-    <div className="relative">
-      <select 
-        value={selectedSpecies}
-        onChange={(e) => setSelectedSpecies(e.target.value)}
-        className="w-full h-[44px] px-4 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-medium focus:outline-none focus:border-[#FFA600] dark:focus:border-[#FFA600] transition-all cursor-pointer appearance-none text-sm"
-      >
-        <option value="All Species" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">All Species</option>
-        <option value="Dog" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Dog</option>
-        <option value="Cat" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Cat</option>
-        <option value="Bird" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Bird</option>
-        <option value="Rabbit" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Rabbit</option>
-        <option value="Turtle" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Turtle</option>
-        <option value="Guinea Pig" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Guinea Pig</option>
-      </select>
-      {/* Custom Dropdown Arrow Icon */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 dark:text-slate-400">
-        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-        </svg>
-      </div>
-    </div>
-  </div>
+          {/* Filter by Species */}
+          <div>
+            <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">
+              Filter by species
+            </label>
+            <div className="relative">
+              <select 
+                value={selectedSpecies}
+                onChange={(e) => setSelectedSpecies(e.target.value)}
+                className="w-full h-[44px] px-4 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-medium focus:outline-none focus:border-[#FFA600] dark:focus:border-[#FFA600] transition-all cursor-pointer appearance-none text-sm"
+              >
+                <option value="All Species" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">All Species</option>
+                <option value="Dog" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Dog</option>
+                <option value="Cat" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Cat</option>
+                <option value="Bird" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Bird</option>
+                <option value="Rabbit" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Rabbit</option>
+                <option value="Turtle" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Turtle</option>
+                <option value="Guinea Pig" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Guinea Pig</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 dark:text-slate-400">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
 
-  {/* Sort Options */}
-  <div>
-    <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">
-      Sort by fee
-    </label>
-    <div className="relative">
-      <select 
-        value={sortBy}
-        onChange={(e) => setSortBy(e.target.value)}
-        className="w-full h-[44px] px-4 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-medium focus:outline-none focus:border-[#FFA600] dark:focus:border-[#FFA600] transition-all cursor-pointer appearance-none text-sm"
-      >
-        <option value="default" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Default</option>
-        <option value="lowToHigh" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Price: Low to High</option>
-        <option value="highToLow" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Price: High to Low</option>
-      </select>
-      {/* Custom Dropdown Arrow Icon */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 dark:text-slate-400">
-        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-        </svg>
-      </div>
-    </div>
-  </div>
+          {/* Sort Options */}
+          <div>
+            <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">
+              Sort by fee
+            </label>
+            <div className="relative">
+              <select 
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full h-[44px] px-4 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-medium focus:outline-none focus:border-[#FFA600] dark:focus:border-[#FFA600] transition-all cursor-pointer appearance-none text-sm"
+              >
+                <option value="default" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Default</option>
+                <option value="lowToHigh" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Price: Low to High</option>
+                <option value="highToLow" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Price: High to Low</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 dark:text-slate-400">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
 
-</div>
+        </div>
 
         {/* Grid System / Loading Spinner */}
         {loading ? (
@@ -151,7 +151,6 @@ const AllPets = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {pets.length > 0 ? (
               pets.map((pet) => {
-                
                 const petId = pet._id || pet.id;
                 
                 return (
@@ -162,17 +161,17 @@ const AllPets = () => {
                     viewport={{ once: true }} 
                     whileHover={{ y: -8 }} 
                     transition={{ duration: 0.4 }}
-                    onClick={() => router.push(`/pet/${petId}`)} // 👈 কার্ডে ক্লিক করলে সেফ আইডি দিয়ে যাবে
+                    onClick={() => router.push(`/pet/${petId}`)} // পুরো কার্ডে ক্লিক করলেও ডিটেইলসে যাবে
                     className="rounded-3xl shadow-md overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/30 flex flex-col hover:shadow-xl transition-all cursor-pointer"
                   >
                     {/* Image Section */}
                     <div className="bg-slate-100 dark:bg-slate-800 h-52 relative overflow-hidden">
                       <img 
-                        src={getImagePath(pet.imageUrl)} 
+                        src={getImagePath(pet.imageUrl || pet.image)} 
                         alt={pet.petName} 
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                         onError={(e) => { 
-                          e.target.src = 'https://placehold.co/600x400?text=No+Image'; 
+                          e.target.src = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600&auto=format&fit=crop'; 
                         }}
                       />
                       <span className={`absolute top-4 right-4 text-xs font-bold px-3 py-1 rounded-full text-white ${pet.status === 'adopted' ? 'bg-rose-500/90' : 'bg-emerald-500/90'}`}>
@@ -192,7 +191,7 @@ const AllPets = () => {
                       </div>
                       
                       <h3 className="text-xl font-bold mb-1 ">
-                        {pet.petName} ({pet.gender})
+                        {pet.petName} ({pet.gender || "N/A"})
                       </h3>
                       
                       <p className="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
@@ -200,23 +199,23 @@ const AllPets = () => {
                       </p>
                       
                       <p className="text-slate-500 dark:text-slate-400 text-xs mb-4 line-clamp-2">
-                        {pet.description}
+                        {pet.description || "No specific description available."}
                       </p>
                       
-                      {/* Action Buttons */}
+                      
                       <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex gap-2" onClick={(e) => e.stopPropagation()}>
                         
-                        {/* View Details Button */}
+                        
                         <Link href={`/pet/${petId}`} className="flex-1">
-                          <button className="w-full bg-[#FFA600] hover:bg-[#E09200] text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm捷">
+                          <button className="w-full bg-[#FFA600] hover:bg-[#E09200] text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm">
                             View Details
                           </button>
                         </Link>
                         
-                        {/* Adopt Now Button */}
+                        
                         <button 
                           disabled={pet.status === 'adopted'} 
-                          onClick={() => router.push('/dashboard/my-requests')} 
+                          onClick={() => router.push(`/pet/${petId}`)} // 👈 এখানে এখন সরাসরি ডাইনামিক পেট ডিটেইলস পেজের রাউট দেওয়া হয়েছে
                           className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-white ${
                             pet.status === 'adopted' 
                               ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none' 
@@ -226,6 +225,7 @@ const AllPets = () => {
                           {pet.status === 'adopted' ? 'Adopted' : 'Adopt Now'}
                         </button>
                       </div>
+
                     </div>
                   </motion.div>
                 );
