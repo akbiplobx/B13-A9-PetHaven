@@ -6,10 +6,14 @@ import { motion } from "framer-motion";
 import { Eye, Edit3, Users, Trash2, Plus, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 
+import RequestModal from '@/components/RequestModal';
+
 export default function MyListings() {
   const router = useRouter();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activePet, setActivePet] = useState(null);
 
   
   const fetchListings = useCallback(() => {
@@ -30,17 +34,20 @@ export default function MyListings() {
       });
   }, []);
 
-  
   useEffect(() => {
     fetchListings();
   }, [fetchListings]);
 
- 
-  const totalListings = listings.length;
-  const availableCount = listings.filter(pet => pet.status !== 'adopted').length;
-  const adoptedCount = listings.filter(pet => pet.status === 'adopted').length;
-
   
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    fetchListings(); 
+  };
+
+  const totalListings = listings.length;
+  const availableCount = listings.filter(pet => pet.status !== 'Adopted' && pet.status !== 'adopted').length;
+  const adoptedCount = listings.filter(pet => pet.status === 'Adopted' || pet.status === 'adopted').length;
+
   const getImagePath = (imagePath) => {
     if (!imagePath) {
       return 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600&auto=format&fit=crop';
@@ -49,7 +56,6 @@ export default function MyListings() {
     const fileName = imagePath.split('/').pop();
     return `/images/${fileName}`;
   };
-
 
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this pet listing?")) {
@@ -123,7 +129,9 @@ export default function MyListings() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {listings.map((pet) => {
             const petId = pet._id || pet.id;
-            const isAdopted = pet.status === 'adopted';
+            
+            const currentStatus = (pet.status || 'available').toLowerCase();
+            const isAdopted = currentStatus === 'adopted' || currentStatus === 'approved';
 
             return (
               <motion.div
@@ -143,7 +151,7 @@ export default function MyListings() {
                       e.target.src = 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=600&auto=format&fit=crop';
                     }}
                   />
-                  <span className={`absolute top-4 right-4 text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full text-white ${isAdopted ? 'bg-rose-500' : 'bg-emerald-500'}`}>
+                  <span className={`absolute top-4 right-4 text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full text-white shadow-sm ${isAdopted ? 'bg-rose-500' : 'bg-emerald-500'}`}>
                     {isAdopted ? 'Adopted' : 'Available'}
                   </span>
                 </div>
@@ -184,7 +192,10 @@ export default function MyListings() {
 
                     <div className="grid grid-cols-2 gap-2">
                       <button 
-                        onClick={() => router.push(`/dashboard/requests/${petId}`)}
+                        onClick={() => {
+                          setActivePet(pet);    
+                          setIsModalOpen(true);  
+                        }}
                         className="flex items-center justify-center gap-1.5 py-2 px-3 border border-blue-500/20 rounded-xl text-xs font-bold bg-blue-500/5 hover:bg-blue-500/10 text-blue-500 transition-colors"
                       >
                         <Users size={14} /> Requests
@@ -204,6 +215,13 @@ export default function MyListings() {
           })}
         </div>
       )}
+      
+      
+      <RequestModal 
+        isOpen={isModalOpen} 
+        onClose={handleModalClose} 
+        pet={activePet} 
+      />
     </div>
   );
 }

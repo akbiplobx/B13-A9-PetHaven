@@ -12,11 +12,14 @@ export async function proxy(request) {
 
   //   const isLoggedIn = false;
 
-  if (session) {
-    return NextResponse.next();
-  }
+if(!session) {
+         return NextResponse.redirect(new URL('/signin', request.url))
+    }
+  // if (session) {
+  //   return NextResponse.next();
+  // }
 
-  return NextResponse.redirect(new URL("/signin", request.url));
+  // return NextResponse.redirect(new URL("/signin", request.url));
 }
 
 
