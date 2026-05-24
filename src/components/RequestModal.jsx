@@ -5,13 +5,13 @@ import React from 'react';
 const RequestModal = ({ isOpen, onClose, requestData, onApprove, onReject }) => {
   if (!isOpen) return null;
 
-  // ডেটা প্রপস থেকে ফিল্ডগুলো নেওয়া হচ্ছে
+  
   const { userName, email, pickupDate, status } = requestData || {};
   
-  // স্ট্যাটাসটি ছোট হাতের অক্ষরে রূপান্তর করে চেক করা হচ্ছে
+ 
   const currentStatus = (status || 'pending').toLowerCase();
   
-  // শুধুমাত্র pending হলেই Approve এবং Reject বাটন দেখাবে
+  
   const showActionButtons = currentStatus === 'pending';
 
   return (
@@ -20,7 +20,7 @@ const RequestModal = ({ isOpen, onClose, requestData, onApprove, onReject }) => 
         
         {/* Title */}
         <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white">
+          <h3 className="text-xl font-bold ">
             Requests Modal
           </h3>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-2xl font-semibold">
@@ -32,8 +32,8 @@ const RequestModal = ({ isOpen, onClose, requestData, onApprove, onReject }) => 
         <div className="py-6 space-y-5">
           <div>
             <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Requested User</p>
-            <p className="text-base font-extrabold text-slate-900 dark:text-white">{userName || 'N/A'}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{email || 'N/A'}</p>
+            <p className="text-base font-extrabold ">{userName || 'N/A'}</p>
+            <p className="text-sm ">{email || 'N/A'}</p>
           </div>
 
           <div>

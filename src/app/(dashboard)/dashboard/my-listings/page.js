@@ -218,7 +218,7 @@ export default function MyListings() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                      {/* আপডেট করা Requests বাটন */}
+                      
                       <button 
                         onClick={() => {
                           const requestWithUserData = {
@@ -251,7 +251,7 @@ export default function MyListings() {
         </div>
       )}
       
-      {/* ফিক্সড কন্ডিশনাল রেন্ডারিং ব্লক */}
+      
       {isModalOpen && activePet && (
         <RequestModal
           isOpen={isModalOpen}
