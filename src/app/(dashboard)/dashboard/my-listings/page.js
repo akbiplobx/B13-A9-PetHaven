@@ -13,9 +13,9 @@ export default function MyListings() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activePet, setActivePet] = useState(null);
+  const [activePet, setActivePet] = useState(null); 
 
-  
+  // রিকোয়েস্ট ডাটা ফেচ করার ফাংশন
   const fetchListings = useCallback(() => {
     setLoading(true);
     fetch('http://localhost:5000/my-listings', { cache: 'no-store' }) 
@@ -38,10 +38,38 @@ export default function MyListings() {
     fetchListings();
   }, [fetchListings]);
 
-  
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    fetchListings(); 
+  // Approve অ্যাকশন হ্যান্ডেলার
+  const handleApprove = async () => {
+    if (!activePet) return;
+    try {
+      const id = activePet._id || activePet.id;
+      console.log("Approving request for pet ID:", id);
+      
+      // লোকাল স্টেট আপডেট (status 'approved' করে দেওয়া হচ্ছে)
+      setListings(prev => prev.map(item => 
+        (item._id || item.id) === id ? { ...item, status: 'approved' } : item
+      ));
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error approving request:", error);
+    }
+  };
+
+  // Reject অ্যাকশন হ্যান্ডেলার
+  const handleReject = async () => {
+    if (!activePet) return;
+    try {
+      const id = activePet._id || activePet.id;
+      console.log("Rejecting request for pet ID:", id);
+      
+      // লোকাল স্টেট আপডেট (status 'rejected' করে দেওয়া হচ্ছে)
+      setListings(prev => prev.map(item => 
+        (item._id || item.id) === id ? { ...item, status: 'rejected' } : item
+      ));
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error rejecting request:", error);
+    }
   };
 
   const totalListings = listings.length;
@@ -129,7 +157,6 @@ export default function MyListings() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {listings.map((pet) => {
             const petId = pet._id || pet.id;
-            
             const currentStatus = (pet.status || 'available').toLowerCase();
             const isAdopted = currentStatus === 'adopted' || currentStatus === 'approved';
 
@@ -191,9 +218,17 @@ export default function MyListings() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
+                      {/* আপডেট করা Requests বাটন */}
                       <button 
                         onClick={() => {
-                          setActivePet(pet);    
+                          const requestWithUserData = {
+                            ...pet,
+                            userName: pet.userName || "Sabbir Rahman",   
+                            email: pet.email || "sabbir@example.com",
+                            pickupDate: pet.pickupDate || "28 May, 2026",
+                            status: pet.status || "pending"              
+                          };
+                          setActivePet(requestWithUserData);    
                           setIsModalOpen(true);  
                         }}
                         className="flex items-center justify-center gap-1.5 py-2 px-3 border border-blue-500/20 rounded-xl text-xs font-bold bg-blue-500/5 hover:bg-blue-500/10 text-blue-500 transition-colors"
@@ -216,12 +251,16 @@ export default function MyListings() {
         </div>
       )}
       
-      
-      <RequestModal 
-        isOpen={isModalOpen} 
-        onClose={handleModalClose} 
-        pet={activePet} 
-      />
+      {/* ফিক্সড কন্ডিশনাল রেন্ডারিং ব্লক */}
+      {isModalOpen && activePet && (
+        <RequestModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          requestData={activePet}
+          onApprove={handleApprove}
+          onReject={handleReject}
+        />
+      )}
     </div>
   );
 }
