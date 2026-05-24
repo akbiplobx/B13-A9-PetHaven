@@ -56,7 +56,7 @@ const AllPets = () => {
         
         {/* Header Section */}
         <div className="mb-6">
-          <span className="text-xs font-bold text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
+          <span className="text-xs font-bold text-[#FFA600] bg-rose-500/10 px-3 py-1 rounded-full uppercase tracking-wider">
             All Available Pets
           </span>
           <h2 className="text-3xl md:text-5xl font-black mt-3">
@@ -215,11 +215,11 @@ const AllPets = () => {
                         
                         <button 
                           disabled={pet.status === 'adopted'} 
-                          onClick={() => router.push(`/pet/${petId}`)} // 👈 এখানে এখন সরাসরি ডাইনামিক পেট ডিটেইলস পেজের রাউট দেওয়া হয়েছে
+                          onClick={() => router.push(`/pet/${petId}`)} 
                           className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-white ${
                             pet.status === 'adopted' 
                               ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none' 
-                              : 'bg-emerald-500 hover:bg-emerald-600 shadow-md shadow-emerald-500/20'
+                              : 'bg-green-600 hover:bg-emerald-600 shadow-md shadow-emerald-500/20'
                           }`}
                         >
                           {pet.status === 'adopted' ? 'Adopted' : 'Adopt Now'}

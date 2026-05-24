@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { Spinner } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ArrowLeft, MapPin, Calendar, DollarSign, Tag, Heart, Info, Send } from 'lucide-react';
+import { toast } from "react-toastify"; // 👈 react-toastify ইম্পোর্ট করা হয়েছে
 
 export default function PetDetails() {
   const { id } = useParams();
@@ -12,7 +13,6 @@ export default function PetDetails() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  
   const currentUser = {
     name: "A K Biplob",
     email: "akbiplob24@gmail.com"
@@ -37,7 +37,6 @@ export default function PetDetails() {
       });
   }, [id]);
 
-  
   const handleAdoptSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -60,14 +59,17 @@ export default function PetDetails() {
 
       const data = await res.json();
       if (data.success) {
-        alert(`🎉 Request to adopt ${pet.petName} submitted successfully!`);
+        // 🎉 সফল হলে react-toastify এর সাকসেস টোস্ট দেখাবে
+        toast.success(`Request to adopt ${pet?.petName || 'Pet'} submitted successfully! 🎉`);
         router.push('/dashboard/my-requests'); 
       } else {
-        alert("Submission failed. Try again.");
+        // ❌ সাবমিশন ফেইল হলে এরর টোস্ট
+        toast.error("Submission failed. Try again.");
       }
     } catch (error) {
       console.error("Error submitting adoption request:", error);
-      alert("Something went wrong connecting to server.");
+      // ❌ সার্ভার এরর টোস্ট
+      toast.error("Something went wrong connecting to server.");
     } finally {
       setSubmitting(false);
     }
@@ -92,7 +94,7 @@ export default function PetDetails() {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-slate-50 dark:bg-[#030712] px-4 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl max-w-md w-full">
-          <div className="w-16 h-16 bg-rose-100 dark:bg-rose-950/40 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-rose-100 dark:bg-rose-950/40 text-[#FFA600] rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Info size={32} />
           </div>
           <h2 className="text-2xl font-black text-black mb-2">Pet Not Found!</h2>
@@ -143,14 +145,14 @@ export default function PetDetails() {
               <div>
                 <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">{pet.petName}</h1>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <span className="text-xs font-bold text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full">{pet.species || "Pet"}</span>
+                  <span className="text-xs font-bold text-[#FFA600] bg-rose-500/10 px-3 py-1 rounded-full">{pet.species || "Pet"}</span>
                   <span className="text-xs font-bold text-[#FFA600] bg-orange-500/10 px-3 py-1 rounded-full">{pet.breed || "Companion"}</span>
                   <span className="text-xs font-bold text-purple-500 bg-purple-500/10 px-3 py-1 rounded-full">{pet.gender || "Gender N/A"}</span>
                 </div>
               </div>
               <div className="text-right">
                 <span className="text-xs font-bold text-slate-400 block">Adoption Fee</span>
-                <span className="text-2xl font-black text-rose-500">BDT {pet.adoptionFee || "0"}</span>
+                <span className="text-2xl font-black text-[#FFA600]">BDT {pet.adoptionFee || "0"}</span>
               </div>
             </div>
 
@@ -176,7 +178,7 @@ export default function PetDetails() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
-                <MapPin className="text-rose-500" size={20} />
+                <MapPin className="text-[#FFA600]" size={20} />
                 <div>
                   <span className="text-xs font-bold text-slate-400 block uppercase">Location</span>
                   <span className="text-sm font-black truncate max-w-[200px] block">{pet.location || "Not specified"}</span>
@@ -200,7 +202,7 @@ export default function PetDetails() {
             </div>
           </div>
 
-         
+          {/* 📋 Right Column: Adoption Form */}
           <div className="lg:col-span-5">
             <motion.div 
               initial={{ opacity: 0, x: 30 }}
@@ -209,9 +211,8 @@ export default function PetDetails() {
             >
               <div>
                 <h2 className="text-lg font-black flex items-center gap-2 text-black">
-                  <Heart size={18} className="text-rose-500 fill-rose-500" /> Request to Adopt {pet.petName}
+                  <Heart size={18} className="text-[#FFA600] fill-rose-500" /> Request to Adopt {pet.petName}
                 </h2>
-                {/* <p className="text-xs text-slate-400 font-medium mt-0.5">Fill out this form and the owner will review your request.</p> */}
               </div>
 
               <form onSubmit={handleAdoptSubmit} className="space-y-4">
@@ -256,7 +257,7 @@ export default function PetDetails() {
                     name="pickupDate" 
                     required 
                     disabled={pet.status === 'adopted'}
-                    className="w-full    font-semibold p-3 rounded-xl border border-slate-200  outline-none text-sm focus:border-rose-500 -rose-500 transition-all"
+                    className="w-full font-semibold p-3 rounded-xl border border-slate-200 outline-none text-sm focus:border-rose-500 transition-all"
                   />
                 </div>
 
@@ -269,7 +270,7 @@ export default function PetDetails() {
                     required
                     disabled={pet.status === 'adopted'}
                     placeholder={`Tell the owner why you'd be a great match for ${pet.petName}...`}
-                    className="w-full  font-semibold p-3 rounded-xl border border-slate-200   text-sm focus:border-rose-500  resize-none"
+                    className="w-full font-semibold p-3 rounded-xl border border-slate-200 text-sm focus:border-rose-500 resize-none"
                   ></textarea>
                 </div>
 
@@ -280,7 +281,7 @@ export default function PetDetails() {
                   className={`w-full py-3.5 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 text-white shadow-md ${
                     pet.status === 'adopted' 
                       ? 'bg-[#FFA600] ' 
-                      : 'bg-[#FFA600]  active:scale-[0.98]'
+                      : 'bg-[#FFA600] active:scale-[0.98]'
                   }`}
                 >
                   {submitting ? (

@@ -5,6 +5,7 @@ import { Spinner } from "@heroui/react";
 import { motion } from "framer-motion";
 import { Eye, Edit3, Users, Trash2, Plus, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from "react-toastify"; 
 
 import RequestModal from '@/components/RequestModal';
 
@@ -15,7 +16,6 @@ export default function MyListings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activePet, setActivePet] = useState(null); 
 
-  // রিকোয়েস্ট ডাটা ফেচ করার ফাংশন
   const fetchListings = useCallback(() => {
     setLoading(true);
     fetch('http://localhost:5000/my-listings', { cache: 'no-store' }) 
@@ -38,37 +38,37 @@ export default function MyListings() {
     fetchListings();
   }, [fetchListings]);
 
-  // Approve অ্যাকশন হ্যান্ডেলার
   const handleApprove = async () => {
     if (!activePet) return;
     try {
       const id = activePet._id || activePet.id;
       console.log("Approving request for pet ID:", id);
       
-      // লোকাল স্টেট আপডেট (status 'approved' করে দেওয়া হচ্ছে)
       setListings(prev => prev.map(item => 
         (item._id || item.id) === id ? { ...item, status: 'approved' } : item
       ));
       setIsModalOpen(false);
+      toast.success("Adoption request approved successfully! 🎉");
     } catch (error) {
       console.error("Error approving request:", error);
+      toast.error("Failed to approve request.");
     }
   };
 
-  // Reject অ্যাকশন হ্যান্ডেলার
   const handleReject = async () => {
     if (!activePet) return;
     try {
       const id = activePet._id || activePet.id;
       console.log("Rejecting request for pet ID:", id);
       
-      // লোকাল স্টেট আপডেট (status 'rejected' করে দেওয়া হচ্ছে)
       setListings(prev => prev.map(item => 
         (item._id || item.id) === id ? { ...item, status: 'rejected' } : item
       ));
       setIsModalOpen(false);
+      toast.warn("Adoption request rejected.");
     } catch (error) {
       console.error("Error rejecting request:", error);
+      toast.error("Failed to reject request.");
     }
   };
 
@@ -85,18 +85,53 @@ export default function MyListings() {
     return `/images/${fileName}`;
   };
 
-  const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this pet listing?")) {
-      try {
-        const res = await fetch(`http://localhost:5000/pet/${id}`, { method: 'DELETE' });
-        if (res.ok) {
-          setListings(listings.filter(item => (item._id || item.id) !== id));
-        } else {
-          alert("Could not delete from backend.");
-        }
-      } catch (error) {
-        console.error("Error deleting pet:", error);
+  
+  const confirmDeleteToast = (id, petName) => {
+    toast.info(
+      <div className="flex flex-col gap-2 p-1">
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+          Are you sure you want to delete <span className="text-[#FFA600]">"{petName}"</span>?
+        </p>
+        <div className="flex justify-end gap-2 mt-2">
+          <button 
+            onClick={() => toast.dismiss()} 
+            className="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl hover:opacity-80 transition-all"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={() => {
+              toast.dismiss();
+              proceedToDelete(id);
+            }} 
+            className="px-3 py-1.5 text-xs font-bold bg-rose-500 text-white rounded-xl hover:bg-rose-600 transition-all shadow-sm"
+          >
+            Yes, Delete
+          </button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
       }
+    );
+  };
+
+  
+  const proceedToDelete = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/pet/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setListings(listings.filter(item => (item._id || item.id) !== id));
+        toast.success("Pet listing deleted successfully! 🗑️");
+      } else {
+        toast.error("Could not delete from backend.");
+      }
+    } catch (error) {
+      console.error("Error deleting pet:", error);
+      toast.error("Something went wrong connecting to server.");
     }
   };
 
@@ -114,11 +149,11 @@ export default function MyListings() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full w-max mb-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#FFA600] bg-rose-500/10 px-3 py-1 rounded-full w-max mb-2">
             <LayoutDashboard size={14} /> My Dashboard
           </div>
           <h1 className="text-3xl font-black tracking-tight">
-            My <span className="text-rose-500">Listings</span>
+            My <span className="text-[#FFA600]">Listings</span>
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Manage your pet listings and adoption requests.
@@ -126,7 +161,7 @@ export default function MyListings() {
         </div>
         
         <Link href="/dashboard/add-pet">
-          <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all text-sm w-full sm:w-auto">
+          <button className="flex items-center justify-center gap-2 bg-[#FFA600] text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all text-sm w-full sm:w-auto">
             <Plus size={18} /> Add New Pet
           </button>
         </Link>
@@ -135,7 +170,7 @@ export default function MyListings() {
       {/* Analytics Counter Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-sm text-center space-y-1">
-          <p className="text-3xl font-black text-rose-500">{totalListings}</p>
+          <p className="text-3xl font-black text-[#FFA600]">{totalListings}</p>
           <p className="text-sm font-bold text-slate-500 dark:text-slate-400">Total Listings</p>
         </div>
         <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-sm text-center space-y-1">
@@ -190,7 +225,7 @@ export default function MyListings() {
                       <h3 className="text-xl font-extrabold tracking-tight truncate pr-2">
                         {pet.petName || pet.title || "Unnamed Pet"}
                       </h3>
-                      <span className="text-rose-500 font-extrabold text-base whitespace-nowrap">
+                      <span className="text-[#FFA600] font-extrabold text-base whitespace-nowrap">
                         BDT {pet.adoptionFee || "0"}
                       </span>
                     </div>
@@ -204,7 +239,7 @@ export default function MyListings() {
                     <div className="grid grid-cols-2 gap-2">
                       <button 
                         onClick={() => router.push(`/pet/${petId}`)}
-                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800 transition-colors"
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800 text-green-600 transition-colors"
                       >
                         <Eye size={14} /> View
                       </button>
@@ -218,7 +253,6 @@ export default function MyListings() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                      
                       <button 
                         onClick={() => {
                           const requestWithUserData = {
@@ -235,9 +269,11 @@ export default function MyListings() {
                       >
                         <Users size={14} /> Requests
                       </button>
+                      
+                      
                       <button 
-                        onClick={() => handleDelete(petId)}
-                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-rose-500/20 rounded-xl text-xs font-bold bg-rose-500/5 hover:bg-rose-500/10 text-rose-500 transition-colors"
+                        onClick={() => confirmDeleteToast(petId, pet.petName || pet.title || "this pet")}
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-rose-500/20 rounded-xl text-xs font-bold bg-rose-500/5 hover:bg-rose-500/10 text-[#FF0000] transition-colors"
                       >
                         <Trash2 size={14} /> Delete
                       </button>
@@ -250,7 +286,6 @@ export default function MyListings() {
           })}
         </div>
       )}
-      
       
       {isModalOpen && activePet && (
         <RequestModal

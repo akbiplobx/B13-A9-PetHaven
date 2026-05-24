@@ -53,11 +53,11 @@ export default function MyRequestsPage() {
       
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2 text-xs font-bold text-rose-500 bg-rose-500/10 px-3 py-1 rounded-full w-max mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold text-[#FFA600] bg-rose-500/10 px-3 py-1 rounded-full w-max mb-2">
           <FileText size={14} /> My Dashboard
         </div>
         <h1 className="text-3xl font-black tracking-tight">
-          My <span className="text-rose-500">Adoption Requests</span>
+          My <span className="text-[#FFA600]">Adoption Requests</span>
         </h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
           Track the status of all your adoption requests here.
@@ -79,7 +79,7 @@ export default function MyRequestsPage() {
           <p className="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400">Approved</p>
         </div>
         <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-xs text-center space-y-1">
-          <p className="text-2xl md:text-3xl font-black text-rose-500">{rejectedCount}</p>
+          <p className="text-2xl md:text-3xl font-black text-[#FFA600]">{rejectedCount}</p>
           <p className="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400">Rejected</p>
         </div>
       </div>

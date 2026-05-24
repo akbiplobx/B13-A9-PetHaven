@@ -111,7 +111,7 @@ export default function EditPet() {
       </button>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-black">Edit <span className="text-rose-500">Pet Info</span></h1>
+        <h1 className="text-3xl font-black">Edit <span className="text-[#FFA600]">Pet Info</span></h1>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Change the fields below to update your pet's profile.</p>
       </div>
 
