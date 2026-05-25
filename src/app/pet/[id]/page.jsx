@@ -5,6 +5,8 @@ import { Spinner } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ArrowLeft, MapPin, Calendar, DollarSign, Tag, Heart, Info, Send } from 'lucide-react';
 import { toast } from "react-toastify"; // 👈 react-toastify ইম্পোর্ট করা হয়েছে
+import { authClient } from '@/lib/auth-client';
+
 
 export default function PetDetails() {
   const { id } = useParams();
@@ -17,30 +19,45 @@ export default function PetDetails() {
     name: "A K Biplob",
     email: "akbiplob24@gmail.com"
   };
-
+  // -------------------
   useEffect(() => {
-    if (!id) return;
+  if (!id) return;
 
+  const fetchPetDetails = async () => {
     setLoading(true);
-    fetch(`http://localhost:5000/pet/${id}`,{
-      headers:{
-        authorization: "logged in"
-      }
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Pet not found");
-        return res.json();
-      })
-      .then((data) => {
-        setPet(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching pet details:", err);
-        setLoading(false);
-      });
-  }, [id]);
+    try {
+      const tokenObj = await authClient.token(); 
+      
+      
+      const tokenData = tokenObj?.token || tokenObj?.data?.token || tokenObj; 
 
+      console.log("Strict Token String:", tokenData); 
+
+      const headers = {};
+      if (tokenData) {
+        headers.authorization = `Bearer ${tokenData}`;
+      }
+
+      const res = await fetch(`http://localhost:5000/pet/${id}`, { headers });
+      
+      if (!res.ok) {
+        throw new Error(`Pet not found. Status: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      setPet(data);
+    } catch (err) {
+      console.error("Error fetching pet details:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPetDetails();
+}, [id]);
+// -----------------------------------
+ 
+// ---------------------------------
   const handleAdoptSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -54,6 +71,7 @@ export default function PetDetails() {
       message: formData.get('message')
     };
 
+    
     try {
       const res = await fetch('http://localhost:5000/adoption-requests', {
         method: 'POST',
@@ -63,16 +81,16 @@ export default function PetDetails() {
 
       const data = await res.json();
       if (data.success) {
-        // 🎉 সফল হলে react-toastify এর সাকসেস টোস্ট দেখাবে
+        
         toast.success(`Request to adopt ${pet?.petName || 'Pet'} submitted successfully! 🎉`);
         router.push('/dashboard/my-requests'); 
       } else {
-        // ❌ সাবমিশন ফেইল হলে এরর টোস্ট
+      
         toast.error("Submission failed. Try again.");
       }
     } catch (error) {
       console.error("Error submitting adoption request:", error);
-      // ❌ সার্ভার এরর টোস্ট
+    
       toast.error("Something went wrong connecting to server.");
     } finally {
       setSubmitting(false);
