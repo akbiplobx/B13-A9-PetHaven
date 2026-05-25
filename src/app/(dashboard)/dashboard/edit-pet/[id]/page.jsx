@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { Input, Button, TextArea, Spinner } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Save } from 'lucide-react';
+import { toast } from "react-toastify"; 
 
 export default function EditPet() {
   const { id } = useParams();
@@ -23,7 +24,6 @@ export default function EditPet() {
     status: 'available'
   });
 
- 
   useEffect(() => {
     if (!id) return;
     fetch(`http://localhost:5000/pet/${id}`)
@@ -48,7 +48,7 @@ export default function EditPet() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error loading pet:", err);
+        toast.error("❌ Failed to load pet details. Please try again.");
         setLoading(false);
       });
   }, [id]);
@@ -58,7 +58,6 @@ export default function EditPet() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdating(true);
@@ -77,16 +76,14 @@ export default function EditPet() {
       const data = await res.json();
 
       if (data.success || data.result?.matchedCount > 0) {
-        alert("🎉 Pet details updated successfully!");
+        toast.success("🎉 Pet details updated successfully!");
         router.push('/dashboard/my-listings');
         router.refresh();
       } else {
-        alert("Backend matched 0 docs. Check database collection.");
+        toast.warning("⚠️ No changes made. Check database collection.");
       }
     } catch (err) {
-      console.error("Fetch implementation failed:", err);
-     
-      alert(`❌ Connection Refused! Please check if your Express backend server is running on port 5000.\n\nError Details: ${err.message}`);
+      toast.error(`❌ Connection Refused! Please check if your Express backend server is running on port 5000.`);
     } finally {
       setUpdating(false);
     }

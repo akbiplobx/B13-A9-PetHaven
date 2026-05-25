@@ -22,7 +22,11 @@ export default function PetDetails() {
     if (!id) return;
 
     setLoading(true);
-    fetch(`http://localhost:5000/pet/${id}`)
+    fetch(`http://localhost:5000/pet/${id}`,{
+      headers:{
+        authorization: "logged in"
+      }
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Pet not found");
         return res.json();
