@@ -4,9 +4,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { Spinner } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ArrowLeft, MapPin, Calendar, DollarSign, Tag, Heart, Info, Send } from 'lucide-react';
-import { toast } from "react-toastify"; // 👈 react-toastify ইম্পোর্ট করা হয়েছে
+import { toast } from "react-toastify"; 
 import { authClient } from '@/lib/auth-client';
-
 
 export default function PetDetails() {
   const { id } = useParams();
@@ -19,51 +18,54 @@ export default function PetDetails() {
     name: "A K Biplob",
     email: "akbiplob24@gmail.com"
   };
-  // -------------------
+
+  // -----------------------------------
+  // 🐾 Fetch Pet Details on Component Load
+  // -----------------------------------
   useEffect(() => {
-  if (!id) return;
+    if (!id) return;
 
-  const fetchPetDetails = async () => {
-    setLoading(true);
-    try {
-      const tokenObj = await authClient.token(); 
-      
-      
-      const tokenData = tokenObj?.token || tokenObj?.data?.token || tokenObj; 
+    const fetchPetDetails = async () => {
+      setLoading(true);
+      try {
+        const tokenObj = await authClient.token(); 
+        const tokenData = tokenObj?.token || tokenObj?.data?.token || tokenObj; 
 
-      console.log("Strict Token String:", tokenData); 
+        console.log("Strict Token String (Fetch):", tokenData); 
 
-      const headers = {};
-      if (tokenData) {
-        headers.authorization = `Bearer ${tokenData}`;
+        const headers = {};
+        if (tokenData) {
+          headers.authorization = `Bearer ${tokenData}`;
+        }
+
+        const res = await fetch(`http://localhost:5000/pet/${id}`, { headers });
+        
+        if (!res.ok) {
+          throw new Error(`Pet not found. Status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        setPet(data);
+      } catch (err) {
+        console.error("Error fetching pet details:", err);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const res = await fetch(`http://localhost:5000/pet/${id}`, { headers });
-      
-      if (!res.ok) {
-        throw new Error(`Pet not found. Status: ${res.status}`);
-      }
-      
-      const data = await res.json();
-      setPet(data);
-    } catch (err) {
-      console.error("Error fetching pet details:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchPetDetails();
+  }, [id]);
 
-  fetchPetDetails();
-}, [id]);
-// -----------------------------------
- 
-// ---------------------------------
+  // -----------------------------------
+  // 💌 Handle Adoption Form Submission
+  // -----------------------------------
   const handleAdoptSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
     const formData = new FormData(e.target);
     const adoptionPayload = {
+      petId: id, 
       petName: pet?.petName || "Pet",
       buyerName: currentUser.name,
       buyerEmail: currentUser.email,
@@ -71,26 +73,37 @@ export default function PetDetails() {
       message: formData.get('message')
     };
 
-    
     try {
+      
+      const tokenObj = await authClient.token(); 
+      const tokenData = tokenObj?.token || tokenObj?.data?.token || tokenObj; 
+
+      console.log("Strict Token String (Submit):", tokenData);
+
+      
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      if (tokenData) {
+        headers.authorization = `Bearer ${tokenData}`; 
+      }
+
+      
       const res = await fetch('http://localhost:5000/adoption-requests', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: JSON.stringify(adoptionPayload)
       });
 
       const data = await res.json();
       if (data.success) {
-        
         toast.success(`Request to adopt ${pet?.petName || 'Pet'} submitted successfully! 🎉`);
         router.push('/dashboard/my-requests'); 
       } else {
-      
-        toast.error("Submission failed. Try again.");
+        toast.error(data.message || "Submission failed. Try again.");
       }
     } catch (error) {
       console.error("Error submitting adoption request:", error);
-    
       toast.error("Something went wrong connecting to server.");
     } finally {
       setSubmitting(false);

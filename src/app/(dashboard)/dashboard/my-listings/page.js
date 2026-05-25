@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { toast } from "react-toastify"; 
 
 import RequestModal from '@/components/RequestModal';
+import { authClient } from '@/lib/auth-client'; 
 
 export default function MyListings() {
   const router = useRouter();
@@ -16,59 +17,107 @@ export default function MyListings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activePet, setActivePet] = useState(null); 
 
-  const fetchListings = useCallback(() => {
+ 
+  const getAuthHeaders = async () => {
+    const tokenObj = await authClient.token();
+    const tokenData = tokenObj?.token || tokenObj?.data?.token || tokenObj;
+    
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    if (tokenData) {
+      headers.authorization = `Bearer ${tokenData}`;
+    }
+    return headers;
+  };
+
+
+  const fetchListings = useCallback(async () => {
     setLoading(true);
-    fetch('http://localhost:5000/my-listings', { cache: 'no-store' }) 
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch listings");
-        return res.json();
-      })
-      .then((data) => {
-        setListings(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching my listings:", err);
-        setListings([]); 
-        setLoading(false); 
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch('http://localhost:5000/my-listings', { 
+        method: 'GET',
+        headers: headers,
+        cache: 'no-store' 
       });
+
+      if (!res.ok) throw new Error("Failed to fetch listings");
+      
+      const data = await res.json();
+      setListings(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error fetching my listings:", err);
+      setListings([]); 
+    } finally {
+      setLoading(false); 
+    }
   }, []);
 
   useEffect(() => {
     fetchListings();
   }, [fetchListings]);
 
+ 
   const handleApprove = async () => {
     if (!activePet) return;
     try {
       const id = activePet._id || activePet.id;
       console.log("Approving request for pet ID:", id);
       
-      setListings(prev => prev.map(item => 
-        (item._id || item.id) === id ? { ...item, status: 'approved' } : item
-      ));
-      setIsModalOpen(false);
-      toast.success("Adoption request approved successfully! 🎉");
+      const headers = await getAuthHeaders();
+      const res = await fetch(`http://localhost:5000/change-status/${id}`, {
+        method: 'PATCH',
+        headers: headers,
+        body: JSON.stringify({ status: 'Approved' })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setListings(prev => prev.map(item => 
+          (item._id || item.id) === id ? { ...item, status: 'approved' } : item
+        ));
+        setIsModalOpen(false);
+        toast.success("Adoption request approved successfully! 🎉");
+      } else {
+        toast.error(data.message || "Failed to approve request.");
+      }
     } catch (error) {
       console.error("Error approving request:", error);
-      toast.error("Failed to approve request.");
+      toast.error("Server error approving request.");
     }
   };
 
+  
   const handleReject = async () => {
     if (!activePet) return;
     try {
       const id = activePet._id || activePet.id;
       console.log("Rejecting request for pet ID:", id);
       
-      setListings(prev => prev.map(item => 
-        (item._id || item.id) === id ? { ...item, status: 'rejected' } : item
-      ));
-      setIsModalOpen(false);
-      toast.warn("Adoption request rejected.");
+      const headers = await getAuthHeaders();
+      const res = await fetch(`http://localhost:5000/change-status/${id}`, {
+        method: 'PATCH',
+        headers: headers,
+        body: JSON.stringify({ status: 'Rejected' })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setListings(prev => prev.map(item => 
+          (item._id || item.id) === id ? { ...item, status: 'rejected' } : item
+        ));
+        setIsModalOpen(false);
+        toast.warn("Adoption request rejected.");
+      } else {
+        toast.error(data.message || "Failed to reject request.");
+      }
     } catch (error) {
       console.error("Error rejecting request:", error);
-      toast.error("Failed to reject request.");
+      toast.error("Server error rejecting request.");
     }
   };
 
@@ -85,7 +134,6 @@ export default function MyListings() {
     return `/images/${fileName}`;
   };
 
-  
   const confirmDeleteToast = (id, petName) => {
     toast.info(
       <div className="flex flex-col gap-2 p-1">
@@ -114,20 +162,26 @@ export default function MyListings() {
         position: "top-center",
         autoClose: false,
         closeOnClick: false,
+        closeButton: false,
         draggable: false,
       }
     );
   };
 
-  
+ 
   const proceedToDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/pet/${id}`, { method: 'DELETE' });
+      const headers = await getAuthHeaders();
+      const res = await fetch(`http://localhost:5000/pet/${id}`, { 
+        method: 'DELETE',
+        headers: headers
+      });
+      
       if (res.ok) {
         setListings(listings.filter(item => (item._id || item.id) !== id));
         toast.success("Pet listing deleted successfully! 🗑️");
       } else {
-        toast.error("Could not delete from backend.");
+        toast.error("Unauthorized or could not delete from backend.");
       }
     } catch (error) {
       console.error("Error deleting pet:", error);
@@ -161,13 +215,13 @@ export default function MyListings() {
         </div>
         
         <Link href="/dashboard/add-pet">
-          <button className="flex items-center justify-center gap-2 bg-[#FFA600] text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all text-sm w-full sm:w-auto">
+          <button className="flex items-center justify-center gap-2 bg-[#FFA600] text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all text-sm w-full sm:w-auto cursor-pointer">
             <Plus size={18} /> Add New Pet
           </button>
         </Link>
       </div>
 
-      {/* Analytics Counter Cards */}
+      {/* Analytics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-sm text-center space-y-1">
           <p className="text-3xl font-black text-[#FFA600]">{totalListings}</p>
@@ -183,7 +237,7 @@ export default function MyListings() {
         </div>
       </div>
 
-      {/* Listings Grid */}
+      {/* Grid */}
       {listings.length === 0 ? (
         <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80">
           <p className="text-slate-400 font-medium">No listings found. Start by adding a pet!</p>
@@ -202,7 +256,6 @@ export default function MyListings() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-sm flex flex-col group hover:shadow-md transition-all duration-300"
               >
-                {/* Image Holder */}
                 <div className="h-48 bg-slate-100 dark:bg-slate-950 relative overflow-hidden">
                   <img
                     src={getImagePath(pet.imageUrl || pet.image)}
@@ -218,7 +271,6 @@ export default function MyListings() {
                   </span>
                 </div>
 
-                {/* Content Details */}
                 <div className="p-5 flex-grow flex flex-col justify-between space-y-4">
                   <div>
                     <div className="flex justify-between items-start mb-1">
@@ -234,19 +286,18 @@ export default function MyListings() {
                     </p>
                   </div>
 
-                  {/* Actions */}
                   <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800/60">
                     <div className="grid grid-cols-2 gap-2">
                       <button 
                         onClick={() => router.push(`/pet/${petId}`)}
-                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800 text-green-600 transition-colors"
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800 text-green-600 transition-colors cursor-pointer"
                       >
                         <Eye size={14} /> View
                       </button>
                       
                       <button 
                         onClick={() => router.push(`/dashboard/edit-pet/${petId}`)}
-                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800 text-amber-500 hover:text-amber-600 transition-colors"
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800 text-amber-500 hover:text-amber-600 transition-colors cursor-pointer"
                       >
                         <Edit3 size={14} /> Edit
                       </button>
@@ -257,29 +308,27 @@ export default function MyListings() {
                         onClick={() => {
                           const requestWithUserData = {
                             ...pet,
-                            userName: pet.userName || "Sabbir Rahman",   
-                            email: pet.email || "sabbir@example.com",
+                            userName: pet.userName || pet.buyerName || "Sabbir Rahman",   
+                            email: pet.email || pet.buyerEmail || "sabbir@example.com",
                             pickupDate: pet.pickupDate || "28 May, 2026",
                             status: pet.status || "pending"              
                           };
                           setActivePet(requestWithUserData);    
                           setIsModalOpen(true);  
                         }}
-                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-blue-500/20 rounded-xl text-xs font-bold bg-blue-500/5 hover:bg-blue-500/10 text-blue-500 transition-colors"
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-blue-500/20 rounded-xl text-xs font-bold bg-blue-500/5 hover:bg-blue-500/10 text-blue-500 transition-colors cursor-pointer"
                       >
                         <Users size={14} /> Requests
                       </button>
                       
-                      
                       <button 
                         onClick={() => confirmDeleteToast(petId, pet.petName || pet.title || "this pet")}
-                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-rose-500/20 rounded-xl text-xs font-bold bg-rose-500/5 hover:bg-rose-500/10 text-[#FF0000] transition-colors"
+                        className="flex items-center justify-center gap-1.5 py-2 px-3 border border-rose-500/20 rounded-xl text-xs font-bold bg-rose-500/5 hover:bg-rose-500/10 text-[#FF0000] transition-colors cursor-pointer"
                       >
                         <Trash2 size={14} /> Delete
                       </button>
                     </div>
                   </div>
-
                 </div>
               </motion.div>
             );

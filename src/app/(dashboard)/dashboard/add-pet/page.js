@@ -1,17 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; 
 import { FieldError, Input, Label, TextField, Select, ListBox, TextArea, Button, Card } from "@heroui/react";
-
 import toast, { Toaster } from "react-hot-toast";
+
+
+import { authClient } from '@/lib/auth-client'; 
 
 export default function AddPetPage() {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
-  
- 
   const [userEmail, setUserEmail] = useState("owner@example.com");
+
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const session = await authClient.getSession();
+        if (session?.user?.email) {
+          setUserEmail(session.user.email);
+        }
+      } catch (err) {
+        console.error("Error fetching session:", err);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -27,31 +42,40 @@ export default function AddPetPage() {
     const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
     try {
+      
+      const tokenObj = await authClient.token();
+      const tokenData = tokenObj?.token || tokenObj?.data?.token || tokenObj;
+
+      
+      const headers = {
+        'content-type': 'application/json'
+      };
+
+      if (tokenData) {
+        headers.authorization = `Bearer ${tokenData}`;
+      }
+
+     
       const res = await fetch(`${serverUrl}/petdata`, {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json'
-        },
+        headers: headers,
         body: JSON.stringify(petData)
       });
 
       if (res.ok) {
-        
         toast.success("Pet added successfully!");
         
-        // rediect
+        // redirect
         setTimeout(() => {
           router.push("/dashboard/my-listings");
         }, 2000);
         
       } else {
         const errorData = await res.json().catch(() => ({}));
-      
         toast.error(errorData?.message || "Server responded with an error.");
       }
     } catch (error) {
       console.error("Submission Error:", error);
-     
       toast.error("Cannot connect to server! Did you forget to start your backend?");
     } finally {
       setIsPending(false);

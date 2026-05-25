@@ -5,6 +5,7 @@ import { Input, Button, TextArea, Spinner } from "@heroui/react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Save } from 'lucide-react';
 import { toast } from "react-toastify"; 
+import { authClient } from '@/lib/auth-client'; 
 
 export default function EditPet() {
   const { id } = useParams();
@@ -26,12 +27,28 @@ export default function EditPet() {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`http://localhost:5000/pet/${id}`)
-      .then((res) => {
+
+    const fetchPetDetails = async () => {
+      try {
+        setLoading(true);
+
+       
+        const tokenObj = await authClient.token();
+        const tokenData = tokenObj?.token || tokenObj?.data?.token || tokenObj;
+
+        const headers = { 'Content-Type': 'application/json' };
+        if (tokenData) {
+          headers.authorization = `Bearer ${tokenData}`; 
+        }
+
+        const res = await fetch(`http://localhost:5000/pet/${id}`, {
+          method: 'GET',
+          headers: headers
+        });
+
         if (!res.ok) throw new Error("Backend server error");
-        return res.json();
-      })
-      .then((data) => {
+        
+        const data = await res.json();
         if (data) {
           setFormData({
             petName: data.petName || data.title || '',
@@ -45,12 +62,15 @@ export default function EditPet() {
             status: data.status || 'available'
           });
         }
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
+        console.error("Error loading pet details:", err);
         toast.error("❌ Failed to load pet details. Please try again.");
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchPetDetails();
   }, [id]);
 
   const handleChange = (e) => {
@@ -63,9 +83,18 @@ export default function EditPet() {
     setUpdating(true);
 
     try {
+      
+      const tokenObj = await authClient.token();
+      const tokenData = tokenObj?.token || tokenObj?.data?.token || tokenObj;
+
+      const headers = { 'Content-Type': 'application/json' };
+      if (tokenData) {
+        headers.authorization = `Bearer ${tokenData}`; // 🔐 টোকেন হেডার যুক্ত করা হলো
+      }
+
       const res = await fetch(`http://localhost:5000/pet/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: JSON.stringify(formData)
       });
 
@@ -83,7 +112,8 @@ export default function EditPet() {
         toast.warning("⚠️ No changes made. Check database collection.");
       }
     } catch (err) {
-      toast.error(`❌ Connection Refused! Please check if your Express backend server is running on port 5000.`);
+      console.error("Update error:", err);
+      toast.error(`❌ Request Failed! Please check if token is valid or server is running.`);
     } finally {
       setUpdating(false);
     }
@@ -102,7 +132,7 @@ export default function EditPet() {
       
       <button 
         onClick={() => router.back()} 
-        className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white mb-6 transition-colors"
+        className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white mb-6 transition-colors cursor-pointer"
       >
         <ArrowLeft size={16} /> Back to Listings
       </button>
@@ -171,7 +201,7 @@ export default function EditPet() {
           <Button 
             type="submit" 
             isLoading={updating}
-            className="w-full bg-[#FFA600] text-white font-black py-4 rounded-xl shadow-lg shadow-orange-500/10 text-sm"
+            className="w-full bg-[#FFA600] text-white font-black py-4 rounded-xl shadow-lg shadow-orange-500/10 text-sm cursor-pointer"
           >
             {!updating && <Save size={16} className="mr-1" />} Save & Update Changes
           </Button>
