@@ -26,16 +26,16 @@ const Footer = () => {
 
             {/* Social Links (Requirement) */}
             <div className="flex items-center gap-4 text-slate-400">
-              <a href="https://www.facebook.com" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
+              <a href="https://www.facebook.com" target="_blank" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
                 <i className="fa-brands fa-facebook-f text-sm"></i>
               </a>
-              <a href="https://x.com" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
+              <a href="https://x.com" target="_blank" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
                 <i className="fa-brands fa-x-twitter text-sm"></i>
               </a>
-              <a href="https://www.instagram.com" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
+              <a href="https://www.instagram.com" target="_blank" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
                 <i className="fa-brands fa-instagram text-sm"></i>
               </a>
-              <a href="https://www.linkedin.com" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
+              <a href="https://www.linkedin.com" target="_blank" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
                 <i className="fa-brands fa-linkedin-in text-sm"></i>
               </a>
             </div>
