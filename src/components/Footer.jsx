@@ -48,8 +48,8 @@ const Footer = () => {
             </h3>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
               <li><Link href="/allpets" className="hover:text-[#FFA600] transition">All Available Pets</Link></li>
-              <li><Link href="/#success-stories" className="hover:text-[#FFA600] transition">Success Stories</Link></li>
-              <li><Link href="/#pet-care" className="hover:text-[#FFA600] transition">Pet Care Tips</Link></li>
+              <li><Link href="#" className="hover:text-[#FFA600] transition">Success Stories</Link></li>
+              <li><Link href="#" className="hover:text-[#FFA600] transition">Pet Care Tips</Link></li>
             </ul>
           </div>
 
@@ -81,9 +81,9 @@ const Footer = () => {
               Company
             </h3>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
-              <li><Link href="/about" className="hover:text-[#FFA600] transition">About Us</Link></li>
-              <li><Link href="/terms" className="hover:text-[#FFA600] transition">Terms & Conditions</Link></li>
-              <li><Link href="/privacy" className="hover:text-[#FFA600] transition">Privacy Policy</Link></li>
+              <li><Link href="#" className="hover:text-[#FFA600] transition">About Us</Link></li>
+              <li><Link href="#" className="hover:text-[#FFA600] transition">Terms & Conditions</Link></li>
+              <li><Link href="#" className="hover:text-[#FFA600] transition">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
@@ -94,8 +94,8 @@ const Footer = () => {
             © {currentYear} <span className="text-slate-800 font-bold">PetHaven</span>. All rights reserved.
           </p>
           <div className="flex gap-8">
-            <Link href="/terms" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Terms</Link>
-            <Link href="/privacy" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Privacy</Link>
+            <Link href="#" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Terms</Link>
+            <Link href="#" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Privacy</Link>
           </div>
         </div>
       </div>
