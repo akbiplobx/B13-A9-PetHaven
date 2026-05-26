@@ -37,7 +37,7 @@ export default function MyListings() {
     setLoading(true);
     try {
       const headers = await getAuthHeaders();
-      const res = await fetch('${process.env.NEXT_PUBLIC_SERVER_URL}/my-listings', { 
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/my-listings`, { 
         method: 'GET',
         headers: headers,
         cache: 'no-store' 
