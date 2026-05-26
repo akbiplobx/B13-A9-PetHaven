@@ -41,7 +41,7 @@ export default function EditPet() {
           headers.authorization = `Bearer ${tokenData}`; 
         }
 
-        const res = await fetch(`http://localhost:5000/pet/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/pet/${id}`, {
           method: 'GET',
           headers: headers
         });
@@ -89,10 +89,10 @@ export default function EditPet() {
 
       const headers = { 'Content-Type': 'application/json' };
       if (tokenData) {
-        headers.authorization = `Bearer ${tokenData}`; // 🔐 টোকেন হেডার যুক্ত করা হলো
+        headers.authorization = `Bearer ${tokenData}`; 
       }
 
-      const res = await fetch(`http://localhost:5000/pet/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/pet/${id}`, {
         method: 'PUT',
         headers: headers,
         body: JSON.stringify(formData)

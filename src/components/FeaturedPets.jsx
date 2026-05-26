@@ -40,7 +40,7 @@ export default function FeaturedPets() {
     setLoading(true);
     
    
-    fetch('http://localhost:5000/pets')
+    fetch('${process.env.NEXT_PUBLIC_SERVER_URL}/pets')
       .then((res) => res.json())
       .then((data) => {
        

@@ -38,7 +38,7 @@ export default function PetDetails() {
           headers.authorization = `Bearer ${tokenData}`;
         }
 
-        const res = await fetch(`http://localhost:5000/pet/${id}`, { headers });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/pet/${id}`, { headers });
         
         if (!res.ok) {
           throw new Error(`Pet not found. Status: ${res.status}`);
@@ -89,7 +89,7 @@ export default function PetDetails() {
       }
 
       
-      const res = await fetch('http://localhost:5000/adoption-requests', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/adoption-requests`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(adoptionPayload)

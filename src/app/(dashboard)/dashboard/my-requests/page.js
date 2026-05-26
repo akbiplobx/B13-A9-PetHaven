@@ -11,7 +11,7 @@ export default function MyRequestsPage() {
 
   
   useEffect(() => {
-    fetch(`http://localhost:5000/my-requests?email=${userEmail}`)
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/my-requests?email=${userEmail}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load requests");
         return res.json();

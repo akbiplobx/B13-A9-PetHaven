@@ -23,7 +23,7 @@ const AllPets = () => {
         sort: sortBy
       });
 
-      const res = await fetch(`http://localhost:5000/pets?${queryParams.toString()}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/pets?${queryParams.toString()}`);
       const data = await res.json();
       setPets(data);
     } catch (err) {

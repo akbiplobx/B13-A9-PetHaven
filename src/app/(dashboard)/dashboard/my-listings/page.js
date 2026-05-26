@@ -37,7 +37,7 @@ export default function MyListings() {
     setLoading(true);
     try {
       const headers = await getAuthHeaders();
-      const res = await fetch('http://localhost:5000/my-listings', { 
+      const res = await fetch('${process.env.NEXT_PUBLIC_SERVER_URL}/my-listings', { 
         method: 'GET',
         headers: headers,
         cache: 'no-store' 
@@ -67,7 +67,7 @@ export default function MyListings() {
       console.log("Approving request for pet ID:", id);
       
       const headers = await getAuthHeaders();
-      const res = await fetch(`http://localhost:5000/change-status/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/change-status/${id}`, {
         method: 'PATCH',
         headers: headers,
         body: JSON.stringify({ status: 'Approved' })
@@ -98,7 +98,7 @@ export default function MyListings() {
       console.log("Rejecting request for pet ID:", id);
       
       const headers = await getAuthHeaders();
-      const res = await fetch(`http://localhost:5000/change-status/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/change-status/${id}`, {
         method: 'PATCH',
         headers: headers,
         body: JSON.stringify({ status: 'Rejected' })
@@ -172,7 +172,7 @@ export default function MyListings() {
   const proceedToDelete = async (id) => {
     try {
       const headers = await getAuthHeaders();
-      const res = await fetch(`http://localhost:5000/pet/${id}`, { 
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/pet/${id}`, { 
         method: 'DELETE',
         headers: headers
       });
