@@ -245,7 +245,7 @@ export default function PetDetails() {
               className="bg-white dark:bg-slate-900 p-6 md:p-8 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-md space-y-5 sticky top-6"
             >
               <div>
-                <h2 className="text-lg font-black flex items-center gap-2 text-black">
+                <h2 className="text-lg font-black flex items-center gap-2">
                   <Heart size={18} className="text-[#FFA600] fill-rose-500" /> Request to Adopt {pet.petName}
                 </h2>
               </div>

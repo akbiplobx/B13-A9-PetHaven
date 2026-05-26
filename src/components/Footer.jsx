@@ -26,16 +26,16 @@ const Footer = () => {
 
             {/* Social Links (Requirement) */}
             <div className="flex items-center gap-4 text-slate-400">
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
+              <a href="https://www.facebook.com" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
                 <i className="fa-brands fa-facebook-f text-sm"></i>
               </a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
+              <a href="https://x.com" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
                 <i className="fa-brands fa-x-twitter text-sm"></i>
               </a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
+              <a href="https://www.instagram.com" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
                 <i className="fa-brands fa-instagram text-sm"></i>
               </a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
+              <a href="https://www.linkedin.com" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-[#FFA600] hover:text-white transition-all duration-300 shadow-sm">
                 <i className="fa-brands fa-linkedin-in text-sm"></i>
               </a>
             </div>
@@ -48,8 +48,8 @@ const Footer = () => {
             </h3>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
               <li><Link href="/allpets" className="hover:text-[#FFA600] transition">All Available Pets</Link></li>
-              <li><Link href="#" className="hover:text-[#FFA600] transition">Success Stories</Link></li>
-              <li><Link href="#" className="hover:text-[#FFA600] transition">Pet Care Tips</Link></li>
+              <li><Link href="/#success-stories" className="hover:text-[#FFA600] transition">Success Stories</Link></li>
+              <li><Link href="/#pet-care" className="hover:text-[#FFA600] transition">Pet Care Tips</Link></li>
             </ul>
           </div>
 
@@ -81,9 +81,9 @@ const Footer = () => {
               Company
             </h3>
             <ul className="space-y-4 text-sm font-medium text-slate-500">
-              <li><Link href="#" className="hover:text-[#FFA600] transition">About Us</Link></li>
-              <li><Link href="#" className="hover:text-[#FFA600] transition">Terms & Conditions</Link></li>
-              <li><Link href="#" className="hover:text-[#FFA600] transition">Privacy Policy</Link></li>
+              <li><Link href="/about" className="hover:text-[#FFA600] transition">About Us</Link></li>
+              <li><Link href="/terms" className="hover:text-[#FFA600] transition">Terms & Conditions</Link></li>
+              <li><Link href="/privacy" className="hover:text-[#FFA600] transition">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
@@ -94,8 +94,8 @@ const Footer = () => {
             © {currentYear} <span className="text-slate-800 font-bold">PetHaven</span>. All rights reserved.
           </p>
           <div className="flex gap-8">
-            <Link href="#" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Terms</Link>
-            <Link href="#" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Privacy</Link>
+            <Link href="/terms" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Terms</Link>
+            <Link href="/privacy" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Privacy</Link>
           </div>
         </div>
       </div>
