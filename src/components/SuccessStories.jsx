@@ -17,29 +17,29 @@ export function SuccessStories() {
   ];
 
   return (
-    <section className="py-16 bg-slate-50 dark:bg-slate-950/40 transition-colors">
+    <section className="py-16  transition-colors">
       <div className="max-w-7xl mx-auto px-5">
         
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-black tracking-tight mb-2 text-black">
+          <h2 className="text-3xl font-black tracking-tight mb-2 ">
             Happy Tails (Success Stories)
           </h2>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="">
             See how these lovely pets found their forever homes.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {stories.map((story, index) => (
-            <Card key={index} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800" shadow="sm">
+            <Card key={index} className=" dark:bg-slate-900 border border-slate-100 dark:border-slate-800" shadow="sm">
               <div className="flex flex-col gap-4 p-6">
-                <p className="italic text-slate-600 dark:text-slate-300">
+                <p className="italic ">
                   "{story.text}"
                 </p>
                 <div className="flex items-center gap-3">
                   <Avatar src={story.img} size="md" className="border border-[#FFA600]" />
                   <div>
-                    <h4 className="font-bold text-sm text-black">
+                    <h4 className="font-bold text-sm ">
                       {story.name}
                     </h4>
                     <p className="text-xs text-slate-400 font-medium">

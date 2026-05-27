@@ -91,7 +91,7 @@ const Footer = () => {
         {/* Footer Bottom (Requirement: Copyright) */}
         <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-6">
           <p className="text-xs font-medium text-slate-400">
-            © {currentYear} <span className="text-slate-800 font-bold">PetHaven</span>. All rights reserved.
+            © {currentYear} <span className=" font-bold">PetHaven</span>. All rights reserved.
           </p>
           <div className="flex gap-8">
             <Link href="/terms" className="text-xs text-slate-400 hover:text-[#FFA600] transition">Terms</Link>

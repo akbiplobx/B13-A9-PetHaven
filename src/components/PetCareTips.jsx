@@ -21,10 +21,10 @@ export function PetCareTips() {
       
       {/* Section Header */}
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-black tracking-tight mb-2 text-black">
+        <h2 className="text-3xl font-black tracking-tight mb-2 ">
           Essential Pet Care Tips
         </h2>
-        <p className="text-slate-500 dark:text-slate-400">
+        <p className="">
           Be the best pet parent with these fundamental practices.
         </p>
       </div>
@@ -34,12 +34,12 @@ export function PetCareTips() {
         {tips.map((tip, index) => (
           <Card 
             key={index} 
-            className="border-t-4 border-t-[#FFA600] bg-white dark:bg-slate-900 border-x-transparent border-b-transparent dark:border-x-slate-800/50 dark:border-b-slate-800/50" 
+            className="border-t-4 border-t-[#FFA600]  dark:bg-slate-900 border-x-transparent border-b-transparent dark:border-x-slate-800/50 dark:border-b-slate-800/50" 
             shadow="sm"
           >
             <div className="p-6 flex flex-col justify-between h-full gap-4">
               <div>
-                <h3 className="text-lg font-bold mb-2 text-black">
+                <h3 className="text-lg font-bold mb-2 ">
                   {tip.title}
                 </h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
