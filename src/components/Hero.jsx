@@ -19,7 +19,7 @@ const Hero = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-800 dark:text-slate-100 leading-tight"
           >
-            Find Your New <br /> 
+            Explore Your New <br /> 
             <span className="text-[#FFA600] relative inline-block">
               Best Friend
               
